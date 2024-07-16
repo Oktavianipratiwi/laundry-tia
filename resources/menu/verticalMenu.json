@@ -1,0 +1,50 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Dashboards",
+      "icon": "menu-icon tf-icons bx bx-home-circle",
+      "slug": "dashboard",
+      "submenu": [
+        {
+          "url": "/",
+          "name": "Analytics",
+          "slug": "dashboard-analytics"
+        }
+      ]
+    },
+    {
+      "menuHeader": "Menu"
+    },
+    {
+      "url": "pesanan",
+      "icon": "menu-icon tf-icons bx bx-basket",
+      "name": "Pesanan",
+      "slug": "order-index"
+    },
+    {
+      "url": "transaksi",
+      "icon": "menu-icon tf-icons bx bx-coin-stack",
+      "name": "Transaksi",
+      "slug": "transactions-index"
+    },
+    {
+      "url": "pakaian",
+      "icon": "menu-icon tf-icons bx bxs-t-shirt",
+      "name": "Pakaian",
+      "slug": "clothes-index"
+    },
+    {
+      "url": "kurir",
+      "icon": "menu-icon tf-icons bx bxs-truck",
+      "name": "Kurir",
+      "slug": "courier-index"
+    },
+    {
+      "url": "pelanggan",
+      "icon": "menu-icon tf-icons bx bxs-user-detail",
+      "name": "Pelanggan",
+      "slug": "customers-index"
+    }
+  ]
+}
