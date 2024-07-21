@@ -31,10 +31,16 @@
                     <th>Nama Pelanggan</th>
                     <th>Tanggal Pemesanan</th>
                     <th>Alamat</th>
+                    <th>Kontak</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
+            @if($pesananDaftar->isEmpty())
+            <tr>
+                <td colspan="6" class="text-center"><b>Pesanan belum ada</b></td>
+            </tr>
+            @endif
             @foreach($pesananDaftar as $key => $row)
             <tbody class="table-border-bottom-0">
                 <tr>
@@ -42,6 +48,7 @@
                     <td>{{ $row->user->name }}</td>
                     <td>{{ \Carbon\Carbon::parse($row->tgl_pemesanan)->translatedFormat('l, j F Y') }}</td>
                     <td>{{ $row->alamat }}</td>
+                    <td>{{ $row->no_telp }}</td>
                     <td>
                         @if($row->status_pemesanan == 'sudah diproses')
                         <span class="badge bg-label-success me-1">Sudah diproses</span>
@@ -63,7 +70,10 @@
                             </button>
                         </form>
                         @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksi{{ $row->id }}" class=" btn btn-outline-primary">
+                        <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksi{{ $row->id }}" class=" btn btn-outline-primary">
+                            <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
+                        </button> -->
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalTipeLayanan{{ $row->id }}" class=" btn btn-outline-primary">
                             <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
                         </button>
                         @elseif($row->status_pemesanan == 'sudah diproses')
@@ -120,62 +130,151 @@
     </div>
 </div>
 
-<!-- MODAL BUAT TRANSAKSI -->
+<!-- MODAL TIPE LAYANAN -->
 @foreach($pesananDaftar as $row)
-<div class="modal fade" id="modalBuatTransaksi{{ $row->id }}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalTipeLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Jenis Layanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Pilih Tipe Layanan Pelanggan
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksiSatuan{{ $row->id }}">Satuan</button>
+                <button type=" submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksiKiloan{{ $row->id }}">Kiloan</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
+<!-- MODAL BUAT TRANSAKSI SATUAN-->
+@foreach($pesananDaftar as $row)
+<div class=" modal fade" id="modalBuatTransaksiSatuan{{ $row->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Tambah Transaksi Satuan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('tambahtransaksisatuan', $row->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="row g-2">
+                        <div class="col mb-1">
+                            <label for="nameBasic" class="form-label"><b>Nama</b></label>
+                            <input type="text" name="user_id" class="form-control" value="{{ $row->user->name }}" readonly>
+                            <input type="hidden" name="user_id" value="{{ $row ? $row->user->id : '' }}">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-1">
+                            <label for="emailBasic" class="form-label"><b>Layanan</b></label>
+                            <select id="defaultSelect" class="form-select" name="layanan_id">
+                                <option disabled selected value="">Pilih Jenis Layanan</option>
+                                @foreach($layananDaftar as $row)
+                                @if($row->jenis_satuan == 'satuan')
+                                <option value="{{ $row->id }}">{{ $row->jenis_layanan}}</option>
+                                @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-1">
+                            <label for="dobBasic" class="form-label"><b>Tanggal Ditimbang</b></label>
+                            <input type="date" name="tgl_ditimbang" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-1">
+                            <label for="dobBasic" class="form-label"><b>Jumlah</b></label>
+                            <input type="number" name="jumlah" class="form-control">
+                        </div>
+                    </div>
+                    <div class=" row g-2">
+                        <div class="col mb-1">
+                            <label for="dobBasic" class="form-label"><b>Diskon</b></label>
+                            <input type="number" name="diskon" class="form-control" value="0">
+                        </div>
+                    </div>
+                    <div class=" row g-2">
+                        <div class="col mb-1">
+                            <label for="emailBasic" class="form-label"><b>Status</b></label>
+                            <select id="defaultSelect" class="form-select" name="status_pembayaran">
+                                <option disabled selected value="">Pilih Status Pembayaran</option>
+                                <option value="belum lunas">Belum Lunas</option>
+                                <option value="lunas">Lunas</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Kirim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+<!-- END -->
+
+<!-- MODAL BUAT TRANSAKSI KILOAN -->
+@foreach($pesananDaftar as $row)
+<div class="modal fade" id="modalBuatTransaksiKiloan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel1">Tambah Transaksi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('tambahtransaksi', $row->id) }}" method="POST">
+            <form action="{{ route('tambahtransaksikiloan', $row->id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="nameBasic" class="form-label">Nama</label>
+                            <label for="nameBasic" class="form-label"><b>Nama</b></label>
                             <input type="text" name="user_id" class="form-control" value="{{ $row->user->name }}" readonly>
-                            <input type="hidden" name="user_id" value="{{ $row ? $row->id : '' }}">
+                            <input type="hidden" name="user_id" value="{{ $row ? $row->user->id : '' }}">
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="emailBasic" class="form-label">Pakaian</label>
-                            <select id="defaultSelect" class="form-select" name="pakaian_id">
-                                @foreach($pakaianDaftar as $row)
-                                <option value="{{ $row->id }}">{{ $row->jenis_pakaian}}</option>
-                                @endforeach
+                            <label for="emailBasic" class="form-label"><b>Layanan</b></label>
+                            <select id="defaultSelect" class="form-select" name="layanan_id">
+                                <option disabled selected value="">Pilih Jenis Layanan</option>
+                                @foreach($layananDaftar as $row)
+                                @if($row->jenis_satuan == 'kiloan')
+                                <option value="{{ $row->id }}">{{ $row->jenis_layanan}}</option>
+                                @endif @endforeach
                             </select>
                         </div>
                     </div>
-                    <!-- <div class="row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label">ID Pemesanan</label>
-                            <input type="number" name="pemesanan_id" class="form-control" value="{{ $row->id }}" readonly>
-                        </div>
-                    </div> -->
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="dobBasic" class="form-label">Tanggal Ditimbang</label>
+                            <label for="dobBasic" class="form-label"><b>Tanggal Ditimbang</b></label>
                             <input type="date" name="tgl_ditimbang" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="dobBasic" class="form-label">Total Berat</label>
-                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }} Kg">
+                            <label for="dobBasic" class="form-label"><b>Total Berat (dalam Kg)</b></label>
+                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}" readonly>
                         </div>
                     </div>
                     <div class=" row g-2">
                         <div class="col mb-1">
-                            <label for="dobBasic" class="form-label">Diskon</label>
+                            <label for="dobBasic" class="form-label"><b>Diskon</b></label>
                             <input type="number" name="diskon" class="form-control" value="0">
                         </div>
                     </div>
                     <div class=" row g-2">
                         <div class="col mb-1">
-                            <label for="emailBasic" class="form-label">Status</label>
+                            <label for="emailBasic" class="form-label"><b>Status</b></label>
                             <select id="defaultSelect" class="form-select" name="status_pembayaran">
                                 <option disabled selected value="">Pilih Status Pembayaran</option>
                                 <option value="belum lunas">Belum Lunas</option>
@@ -236,12 +335,12 @@
 <!-- END -->
 
 <!-- MODAL EDIT PESANAN -->
-@foreach($pesananDaftar as $row)
+@foreach($pesananDaftar as $key => $row)
 <div class="modal fade" id="modalEditPesanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Edit Pesanan No {{ $key }}</h5>
+                <h5 class="modal-title" id="modalCenterTitle">Edit Pesanan No {{ $key+1 }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('editpesanan',$row->id) }}" method="POST">
@@ -289,4 +388,6 @@
     </div>
 </div>
 @endforeach
+
+
 @endsection

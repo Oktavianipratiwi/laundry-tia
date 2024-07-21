@@ -47,12 +47,13 @@ use App\Http\Controllers\menu\OrderController;
 use App\Http\Controllers\menu\ClothesController;
 use App\Http\Controllers\menu\CourierController;
 use App\Http\Controllers\menu\CustomersController;
+use App\Http\Controllers\menu\ServicesController;
 use App\Http\Controllers\menu\TransactionsController;
 use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\menu\WeightController;
 
 // Main Page Route
-Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard-analytics');
+Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -130,8 +131,10 @@ Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function
     Route::get('/pesanan', [OrderController::class, 'index'])->name('order-index');
     // transactions
     Route::get('/transaksi', [TransactionsController::class, 'index'])->name('transactions-index');
-    // clothes
-    Route::get('/pakaian', [ClothesController::class, 'index'])->name('clothes-index');
+    // services
+    Route::get('/layanan', [ServicesController::class, 'index'])->name('services-index');
+
+    Route::get('/detailtransaksi/{id}', [TransactionsController::class, 'detailtransaksi'])->name('detailtransaksi');
 });
 
 // Routes accessible to admin and pegawai
@@ -141,13 +144,16 @@ Route::middleware(['auth', 'checkRole:admin,pegawai'])->group(function () {
     Route::post('/editpesanan/{id}', [OrderController::class, 'editpesanan'])->name('editpesanan');
     Route::delete('/hapuspesanan/{id}', [OrderController::class, 'hapuspesanan'])->name('hapuspesanan');
     // transactions
-    Route::post('/tambahtransaksi/{id}', [OrderController::class, 'tambahtransaksi'])->name('tambahtransaksi');
+    Route::post('/tambahtransaksikiloan/{id}', [OrderController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
+    Route::post('/tambahtransaksisatuan/{id}', [OrderController::class, 'tambahtransaksisatuan'])->name('tambahtransaksisatuan');
     Route::post('/konfirmasitransaksi/{id}', [TransactionsController::class, 'konfirmasitransaksi'])->name('konfirmasitransaksi');
     Route::delete('/hapustransaksi/{id}', [TransactionsController::class, 'hapustransaksi'])->name('hapustransaksi');
-    // clothes
-    Route::post('/tambahpakaian', [ClothesController::class, 'tambahpakaian'])->name('tambahpakaian');
-    Route::post('/editpakaian/{id}', [ClothesController::class, 'editpakaian'])->name('editpakaian');
-    Route::delete('/hapuspakaian/{id}', [ClothesController::class, 'hapuspakaian'])->name('hapuspakaian');
+
+    // services
+    Route::post('/tambahlayanan', [ServicesController::class, 'tambahlayanan'])->name('tambahlayanan');
+    Route::post('/editlayanan/{id}', [ServicesController::class, 'editlayanan'])->name('editlayanan');
+    Route::delete('/hapuslayanan/{id}', [ServicesController::class, 'hapuslayanan'])->name('hapuslayanan');
+
 
     Route::get('/weights', [WeightController::class, 'index'])->name('weights.index');
 });
@@ -169,6 +175,5 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 Route::middleware(['auth', 'checkRole:pelanggan'])->group(function () {
     Route::post('/tambahpesanan', [OrderController::class, 'tambahpesanan'])->name('tambahpesanan');
 
-    Route::get('/detailtransaksi/{id}', [TransactionsController::class, 'detailtransaksi'])->name('detailtransaksi');
     Route::post('/bayartransaksi/{id}', [TransactionsController::class, 'bayartransaksi'])->name('bayartransaksi');
 });

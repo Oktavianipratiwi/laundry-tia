@@ -13,9 +13,11 @@ class Transaksi extends Model
 
     protected $fillable = [
         'user_id',
+        'layanan_id',
         'pakaian_id',
         'pemesanan_id',
         'total_berat',
+        'jumlah',
         'diskon',
         'tgl_ditimbang',
         'tgl_diambil',
@@ -29,9 +31,9 @@ class Transaksi extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function pakaian()
+    public function layanan()
     {
-        return $this->belongsTo(Pakaian::class);
+        return $this->belongsTo(Layanan::class);
     }
 
     public function pemesanan()

@@ -11,9 +11,10 @@ class CreateTransaksiTable extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('pakaian_id');
+            $table->unsignedBigInteger('layanan_id');
             $table->unsignedBigInteger('pemesanan_id');
-            $table->float('total_berat');
+            $table->float('total_berat')->nullable();
+            $table->int('jumlah')->nullable();
             $table->integer('diskon')->default(0);
             $table->dateTime('tgl_ditimbang');
             $table->dateTime('tgl_diambil')->nullable();
@@ -23,7 +24,7 @@ class CreateTransaksiTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('pakaian_id')->references('id')->on('pakaian')->onDelete('cascade');
+            $table->foreign('layanan_id')->references('id')->on('layanan')->onDelete('cascade');
             $table->foreign('pemesanan_id')->references('id')->on('pemesanan')->onDelete('cascade');
         });
     }

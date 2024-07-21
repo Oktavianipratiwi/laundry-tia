@@ -87,9 +87,9 @@ $isNavbar = false;
                 </form>
                 @endif
                 @if($transaksi->bukti_pembayaran)
-                <div class="mt-3">
+                <div class="mt-3 text-center">
                     <p><strong>Bukti Pembayaran:</strong></p>
-                    <img src="{{ asset($transaksi->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="img-fluid text-cente" style="width: 50%; height: 50%;">
+                    <img src="{{ asset($transaksi->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="img-fluid" style="width: 50%; height: 50%;">
                 </div>
                 @endif
             </div>

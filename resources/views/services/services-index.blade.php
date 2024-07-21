@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Pakaian')
+@section('title', 'Layanan')
 
 @section('content')
 
@@ -14,40 +14,42 @@
 <div class="card">
     @if(auth()->user()->role == 'admin')
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Daftar Pakaian</h5>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPakaian">
-            <span class="tf-icons bx bx-plus-circle me-1"></span>Tambah Pakaian
+        <h5 class="mb-0">Daftar Layanan</h5>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahLayanan">
+            <span class="tf-icons bx bx-plus-circle me-1"></span>Tambah Layanan
         </button>
     </div>
     @else
-    <h5 class="card-header">Daftar Pakaian</h5>
+    <h5 class="card-header">Daftar Layanan</h5>
     @endif
     <div class="table-responsive text-nowrap">
         <table class="table">
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Jenis Pakaian</th>
-                    <th>Harga/Kg</th>
+                    <th>Jenis Layanan</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
                     @if(auth()->user()->role == 'admin')
                     <th>Actions</th>
                     @endif
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @foreach($pakaianDaftar as $key => $row)
+                @foreach($layananDaftar as $key => $row)
                 <tr>
                     <td>{{ $key+1 }}</td>
-                    <td>{{ $row->jenis_pakaian }}</td>
+                    <td>{{ $row->jenis_layanan }}</td>
                     <!-- <td>{{ \Carbon\Carbon::parse($row->created_at)->translatedFormat('l, j F Y') }}</td> -->
                     <td>Rp{{ number_format($row->harga, 0, ',', '.') }}</td>
+                    <td>{{ $row->jenis_satuan }}</td>
                     @if(auth()->user()->role == 'admin')
                     <td>
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditPakaian{{ $row->id }}"><i class=" bx bx-edit-alt me-1"></i> Edit</a>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusPakaian{{ $row->id }}"><i class=" bx bx-trash me-1"></i> Delete</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditLayanan{{ $row->id }}"><i class=" bx bx-edit-alt me-1"></i> Edit</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusLayanan{{ $row->id }}"><i class=" bx bx-trash me-1"></i> Delete</a>
                             </div>
                         </div>
                     </td>
@@ -59,27 +61,37 @@
     </div>
 </div>
 
-<!-- MODAL TAMBAH PAKAIAN -->
-<div class="modal fade" id="modalTambahPakaian" tabindex="-1" aria-hidden="true">
+<!-- MODAL TAMBAH LAYANAN -->
+<div class="modal fade" id="modalTambahLayanan" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Tambah Pakaian</h5>
+                <h5 class="modal-title" id="exampleModalLabel1">Tambah Layanan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('tambahpakaian') }}" method="POST">
+            <form action="{{ route('tambahlayanan') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="dobBasic" class="form-label">Jenis Pakaian</label>
-                            <input type="text" name="jenis_pakaian" class="form-control" placeholder="Masukkan Jenis Pakaian">
+                            <label for="dobBasic" class="form-label">Jenis Layanan</label>
+                            <input type="text" name="jenis_layanan" class="form-control" placeholder="Masukkan Jenis Layanan">
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label">Harga</label>
                             <input type="number" name="harga" class="form-control" placeholder="Masukkan Harga">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="emailBasic" class="form-label">Jumlah</label>
+                            <select id="defaultSelect" class="form-select" name="jenis_satuan">
+                                <option disabled selected value="">Pilih Jumlah</option>
+                                <option value="satuan">Satuan</option>
+                                <option value="kiloan">Kiloan</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -93,22 +105,22 @@
 </div>
 <!-- END -->
 
-<!-- MODAL EDIT PAKAIAN -->
-@foreach($pakaianDaftar as $row)
-<div class="modal fade" id="modalEditPakaian{{ $row->id }}" tabindex="-1" aria-hidden="true">
+<!-- MODAL EDIT LAYANAN -->
+@foreach($layananDaftar as $row)
+<div class="modal fade" id="modalEditLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Edit Pakaian</h5>
+                <h5 class="modal-title" id="modalCenterTitle">Edit Layanan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('editpakaian',$row->id) }}" method="POST">
+            <form action="{{ route('editlayanan',$row->id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="nameWithTitle" class="form-label">Jenis Pakaian</label>
-                            <input type="text" name="jenis_pakaian" class="form-control" value="{{ $row->jenis_pakaian }}">
+                            <label for="nameWithTitle" class="form-label">Jenis Layanan</label>
+                            <input type="text" name="jenis_layanan" class="form-control" value="{{ $row->jenis_layanan }}">
                         </div>
                     </div>
                     <div class="col mb-3">
@@ -127,19 +139,19 @@
 @endforeach
 <!-- END -->
 
-<!-- MODAL HAPUS PAKAIAN -->
-@foreach($pakaianDaftar as $row)
-<div class="modal fade" id="modalHapusPakaian{{ $row->id }}" tabindex="-1" aria-hidden="true">
+<!-- MODAL HAPUS LAYANAN -->
+@foreach($layananDaftar as $row)
+<div class="modal fade" id="modalHapusLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Hapus Pakaian</h5>
+                <h5 class="modal-title" id="modalCenterTitle">Hapus Layanan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Apakah Anda yakin untuk menghapus jenis pakaian <b>{{ $row->jenis_pakaian }}</b> ?
+                Apakah Anda yakin untuk menghapus jenis layanan <b>{{ $row->jenis_layanan }}</b> ?
             </div>
-            <form action="{{ route('hapuspakaian',$row->id) }}" method="POST">
+            <form action="{{ route('hapuslayanan',$row->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <div class="modal-footer">
