@@ -237,13 +237,13 @@
               <!-- Checkbox -->
               <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                 <input type="checkbox" class="btn-check" id="btncheck1" checked>
-              <label class="btn btn-outline-primary d-flex flex-column" for="btncheck1"><span class="d-none d-sm-block">Checkbox</span>1 ( pre-checked )</label>
+                <label class="btn btn-outline-primary d-flex flex-column" for="btncheck1"><span class="d-none d-sm-block">Checkbox</span>1 ( pre-checked )</label>
 
-              <input type="checkbox" class="btn-check" id="btncheck2">
-              <label class="btn btn-outline-primary d-flex flex-column" for="btncheck2"><span class="d-none d-sm-block">Checkbox</span>2</label>
+                <input type="checkbox" class="btn-check" id="btncheck2">
+                <label class="btn btn-outline-primary d-flex flex-column" for="btncheck2"><span class="d-none d-sm-block">Checkbox</span>2</label>
 
-              <input type="checkbox" class="btn-check" id="btncheck3">
-              <label class="btn btn-outline-primary d-flex flex-column" for="btncheck3"><span class="d-none d-sm-block">Checkbox</span>3</label>
+                <input type="checkbox" class="btn-check" id="btncheck3">
+                <label class="btn btn-outline-primary d-flex flex-column" for="btncheck3"><span class="d-none d-sm-block">Checkbox</span>3</label>
               </div>
               <br />
               <!-- Radio -->

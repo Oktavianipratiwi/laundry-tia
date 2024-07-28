@@ -25,12 +25,16 @@
                     <th>Total Berat</th>
                     <th>Total Bayar</th>
                     <th>Status Pembayaran</th>
+                    <th>Pengantaran</th>
                     <th>Bukti</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-                @php $no = 1; @endphp <!-- Initialize counter -->
+                @php $no = 1; @endphp
+                @if($transaksiDaftar->sum('total_berat') == 0)
+                <td style="font-weight:bold; text-align:center;" colspan="8">Transaksi Belum Ada</td>
+                @endif
                 @foreach($transaksiDaftar as $key => $row)
                 @if($row->total_berat != null)
                 <tr>
@@ -47,6 +51,11 @@
                     <td><span class="badge bg-label-warning me-1">Belum Lunas</span></td>
                     @elseif($row->pemesanan->status_pemesanan == 'sudah diperiksa')
                     <td><span class="badge bg-label-warning me-1">Lunas - Sudah Diperiksa</span></td>
+                    @endif
+                    @if($row->status_pengantaran == 'belum diantar')
+                    <td><span class="badge bg-label-danger me-1">Belum diantar</span></td>
+                    @elseif($row->status_pengantaran == 'sudah diantar')
+                    <td><span class="badge bg-label-success me-1">sudah diantar</span></td>
                     @endif
                     @if($row->bukti_pembayaran != null)
                     <td><b><a href="{{ asset($row->bukti_pembayaran) }}" target="_blank">Lihat Bukti</a></b></td>
@@ -85,12 +94,16 @@
                         <th>Jumlah</th>
                         <th>Total Bayar</th>
                         <th>Status Pembayaran</th>
+                        <th>Pengantaran</th>
                         <th>Bukti</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
                     @php $no = 1; @endphp <!-- Initialize counter -->
+                    @if($transaksiDaftar->sum('jumlah') == 0)
+                    <td style="font-weight:bold; text-align:center;" colspan="8">Transaksi Belum Ada</td>
+                    @endif
                     @foreach($transaksiDaftar as $key => $row)
                     @if($row->jumlah != null)
                     <tr>
@@ -105,6 +118,11 @@
                         <td><span class="badge bg-label-warning me-1">Belum Lunas</span></td>
                         @elseif($row->pemesanan->status_pemesanan == 'sudah diperiksa')
                         <td><span class="badge bg-label-warning me-1">Lunas - Sudah Diperiksa</span></td>
+                        @endif
+                        @if($row->status_pengantaran == 'belum diantar')
+                        <td><span class="badge bg-label-danger me-1">Belum diantar</span></td>
+                        @elseif($row->status_pengantaran == 'sudah diantar')
+                        <td><span class="badge bg-label-success me-1">sudah diantar</span></td>
                         @endif
                         @if($row->bukti_pembayaran != null)
                         <td><b><a href="{{ asset($row->bukti_pembayaran) }}" target="_blank">Lihat Bukti</a></b></td>
@@ -130,6 +148,8 @@
                     @endforeach
                 </tbody>
             </table>
+
+            <!-- untuk pelanggan saja -->
             @else
             <h5 class="card-header">Daftar Transaksi Saya</h5>
             <div class="table-responsive text-nowrap">
@@ -163,7 +183,6 @@
                                     <button type="submit" class="btn btn-primary">Detail
                                     </button>
                                 </form>
-                                </form>
                             </td>
                             </td>
                         </tr>
@@ -174,7 +193,7 @@
             </div>
         </div>
 
-        <!-- MODAL KONFIRMASI TRANSAKSI -->
+        <!-- MODAL KONFIRMASI TRANSAKSI UNTUK ADMIN DAN KURIR -->
         @foreach($transaksiDaftar as $key => $row)
         <div class="modal fade" id="modalKonfirmasiTransaksi{{ $row->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -200,7 +219,7 @@
 
         <!-- END -->
 
-        <!-- MODAL HAPUS TRANSAKSI -->
+        <!-- MODAL HAPUS TRANSAKSI UNTUK ADMIN DAN KURIR -->
         @foreach($transaksiDaftar as $row)
         <div class="modal fade" id="modalHapusTransaksi{{ $row->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">

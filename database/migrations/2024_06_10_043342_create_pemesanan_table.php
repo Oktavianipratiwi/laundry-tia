@@ -18,7 +18,7 @@ return new class extends Migration
             $table->dateTime('tgl_pemesanan');
             $table->string('alamat');
             $table->string('no_telp');
-            $table->enum('status_pemesanan', ['sudah diproses', 'belum diproses', 'pegawai menuju lokasi', 'sudah diperiksa'])->default('belum diproses');
+            $table->enum('status_pemesanan', ['sudah diproses', 'belum diproses', 'pegawai menuju lokasi', 'sudah diperiksa', 'antar pesanan'])->default('belum diproses');
             $table->timestamps();
         });
     }

@@ -22,6 +22,27 @@ class AuthController extends Controller
         }
     }
 
+    public function loginaksi(Request $request)
+    {
+        // Validate email and password fields
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        // Attempt authentication using Laravel's built-in method
+        if (Auth::attempt($request->only('email', 'password'), $request->has('remember'))) {
+            // Login successful, redirect to dashboard
+            return redirect()->intended('dashboard');
+        }
+
+        // Login failed, flash appropriate error message
+        return redirect()->back()
+            ->withErrors([
+                'error' => 'Email atau Password Salah',
+            ]);
+    }
+
     public function register()
     {
         return view('auth.auth-register');
@@ -66,26 +87,7 @@ class AuthController extends Controller
         }
     }
 
-    public function loginaksi(Request $request)
-    {
-        // Validate email and password fields
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
 
-        // Attempt authentication using Laravel's built-in method
-        if (Auth::attempt($request->only('email', 'password'), $request->has('remember'))) {
-            // Login successful, redirect to dashboard
-            return redirect()->intended('dashboard');
-        }
-
-        // Login failed, flash appropriate error message
-        return redirect()->back()
-            ->withErrors([
-                'error' => 'Email atau Password Salah',
-            ]);
-    }
 
     public function logoutaksi()
     {

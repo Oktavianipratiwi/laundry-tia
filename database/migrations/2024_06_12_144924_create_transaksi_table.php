@@ -20,6 +20,7 @@ class CreateTransaksiTable extends Migration
             $table->dateTime('tgl_diambil')->nullable();
             $table->float('total_bayar');
             $table->enum('status_pembayaran', ['belum lunas', 'lunas'])->default('belum lunas');
+            $table->enum('status_pengantaran', ['belum diantar', 'sudah diantar'])->default('belum diantar');
             $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();
 
