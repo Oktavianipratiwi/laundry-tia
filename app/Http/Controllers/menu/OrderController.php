@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\menu;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AntarPesanan;
+use App\Mail\JemputPesanan;
+use App\Mail\ProsesPesanan;
 use App\Models\Layanan;
 use App\Models\Pemesanan;
 use App\Models\Transaksi;
+use App\Models\User;
 use App\Models\Weight;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -33,6 +38,7 @@ class OrderController extends Controller
         return view('order.order-index', compact('pesananDaftar', 'weight_data', 'layananDaftar'));
     }
 
+    // UNTUK PELANGGAN
     public function tambahpesanan(Request $request)
     {
         $pemesanan = new Pemesanan;
@@ -47,23 +53,66 @@ class OrderController extends Controller
         // $pemesanan->status_pemesanan = 'sudah diproses';
         // $pemesanan->save();
 
-        if (Auth::user()->role == 'pegawai') {
-            return redirect()->route('order-index')->with('success', 'Transaksi berhasil ditambahkan.');
-        } elseif (Auth::user()->role == 'admin') {
-            return redirect()->route('order-index')->with('success', 'Transaksi berhasil ditambahkan.');
-        } else {
-            return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
-        }
+        // if (Auth::user()->role == 'pegawai') {
+        //     return redirect()->route('order-index')->with('success', 'Transaksi berhasil ditambahkan.');
+        // } elseif (Auth::user()->role == 'admin') {
+        //     return redirect()->route('order-index')->with('success', 'Transaksi berhasil ditambahkan.');
+        // } else {
+        //     return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
+        // }
+
+        return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
     }
 
-    public function konfirmasipesanan($id)
+    // UNTUK KURIR
+    public function konfirmasipesananjemput($id)
     {
         $pesanan = Pemesanan::findOrFail($id);
+
+        $user = User::findOrFail($pesanan->id_user);
+
+        $kurir = auth()->user();
+        Mail::to($user->email)->send(new JemputPesanan($user->name, $kurir->name, $kurir->no_telp));
 
         $pesanan->status_pemesanan = 'pegawai menuju lokasi';
         $pesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi.');
+
+        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk penjemputan.');
+    }
+
+    // UNTUK KURIR
+    public function konfirmasipesananantar($id)
+    {
+        $pesanan = Pemesanan::findOrFail($id);
+
+        $user = User::findOrFail($pesanan->id_user);
+
+        $kurir = auth()->user();
+        Mail::to($user->email)->send(new AntarPesanan($user->name, $kurir->name, $kurir->no_telp));
+
+        $pesanan->status_pemesanan = 'antar pesanan';
+        $pesanan->save();
+
+        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
+    }
+
+    public function pesananselesai($id)
+    {
+        $pesanan = Pemesanan::findOrFail($id);
+
+        $transaksi = Transaksi::where('pemesanan_id', $pesanan->id)->first();
+
+        if ($transaksi) {
+            // Jika transaksi ditemukan, ubah status pengantaran
+            $transaksi->status_pengantaran = 'sudah diantar';
+            $transaksi->save();
+        }
+
+        $pesanan->status_pemesanan = 'sudah diperiksa';
+        $pesanan->save();
+
+        return redirect()->route('order-index')->with('success', 'Pesanan selesai.');
     }
 
     public function tambahtransaksikiloan(Request $request, $id)
@@ -95,6 +144,10 @@ class OrderController extends Controller
             'updated_at' => now()
         ]);
 
+        $user = User::findOrFail($pesanan->id_user);
+        $transaksi = Transaksi::latest()->first();
+
+        Mail::to($user->email)->send(new ProsesPesanan($user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
         $pesanan->status_pemesanan = 'sudah diproses';
         $pesanan->save();
@@ -128,6 +181,11 @@ class OrderController extends Controller
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        $user = User::findOrFail($pesanan->id_user);
+        $transaksi = Transaksi::latest()->first();
+
+        Mail::to($user->email)->send(new ProsesPesanan($user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
 
         $pesanan->status_pemesanan = 'sudah diproses';

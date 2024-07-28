@@ -43,10 +43,12 @@ use App\Http\Controllers\form_elements\InputGroups;
 use App\Http\Controllers\form_layouts\VerticalForm;
 use App\Http\Controllers\form_layouts\HorizontalForm;
 use App\Http\Controllers\menu\AuthController;
+use App\Http\Controllers\menu\BeratLiveController;
 use App\Http\Controllers\menu\OrderController;
 use App\Http\Controllers\menu\ClothesController;
 use App\Http\Controllers\menu\CourierController;
 use App\Http\Controllers\menu\CustomersController;
+use App\Http\Controllers\menu\ProfileController;
 use App\Http\Controllers\menu\ServicesController;
 use App\Http\Controllers\menu\TransactionsController;
 use App\Http\Controllers\tables\Basic as TablesBasic;
@@ -116,64 +118,75 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 // tables
 Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic');
 
-// authentication 
+// ROUTE UNTUK PROJEK TA ADA DIBAWAH INI
+
+// LOGIN DAN REGISTER 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/loginaksi', [AuthController::class, 'loginaksi'])->name('loginaksi');
-Route::get('/logoutaksi', [AuthController::class, 'logoutaksi'])->name('logoutaksi');
 
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/daftaraksi', [AuthController::class, 'daftaraksi'])->name('daftaraksi');
 
+Route::get('/logoutaksi', [AuthController::class, 'logoutaksi'])->name('logoutaksi');
 
-// Routes accessible to admin, pegawai, and pelanggan
+// RUTE UNTUK HAK AKSES ADMIN, PEGAWAI, DAN PELANGGAN
 Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function () {
-    // order
+    // order/pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('order-index');
-    // transactions
+    // transactions/transaksi
     Route::get('/transaksi', [TransactionsController::class, 'index'])->name('transactions-index');
-    // services
+    Route::get('/detailtransaksi/{id}', [TransactionsController::class, 'detailtransaksi'])->name('detailtransaksi');
+    // services/layanan
     Route::get('/layanan', [ServicesController::class, 'index'])->name('services-index');
 
-    Route::get('/detailtransaksi/{id}', [TransactionsController::class, 'detailtransaksi'])->name('detailtransaksi');
+    // profil
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile-index');
+    Route::post('/editprofile', [ProfileController::class, 'editprofile'])->name('editprofile');
 });
 
-// Routes accessible to admin and pegawai
+// RUTE UNTUK HAK AKSES ADMIN DAN PEGAWAI
 Route::middleware(['auth', 'checkRole:admin,pegawai'])->group(function () {
-    // order
-    Route::post('/konfirmasipesanan/{id}', [OrderController::class, 'konfirmasipesanan'])->name('konfirmasipesanan');
+    // order/pesanan
+    Route::post('/konfirmasipesananantar/{id}', [OrderController::class, 'konfirmasipesananantar'])->name('konfirmasipesananantar');
+    Route::post('/konfirmasipesananjemput/{id}', [OrderController::class, 'konfirmasipesananjemput'])->name('konfirmasipesananjemput');
+    Route::post('/pesananselesai/{id}', [OrderController::class, 'pesananselesai'])->name('pesananselesai');
     Route::post('/editpesanan/{id}', [OrderController::class, 'editpesanan'])->name('editpesanan');
     Route::delete('/hapuspesanan/{id}', [OrderController::class, 'hapuspesanan'])->name('hapuspesanan');
-    // transactions
+    // transactions/transaksi
     Route::post('/tambahtransaksikiloan/{id}', [OrderController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
     Route::post('/tambahtransaksisatuan/{id}', [OrderController::class, 'tambahtransaksisatuan'])->name('tambahtransaksisatuan');
     Route::post('/konfirmasitransaksi/{id}', [TransactionsController::class, 'konfirmasitransaksi'])->name('konfirmasitransaksi');
     Route::delete('/hapustransaksi/{id}', [TransactionsController::class, 'hapustransaksi'])->name('hapustransaksi');
 
-    // services
+    // services/layanan
     Route::post('/tambahlayanan', [ServicesController::class, 'tambahlayanan'])->name('tambahlayanan');
     Route::post('/editlayanan/{id}', [ServicesController::class, 'editlayanan'])->name('editlayanan');
     Route::delete('/hapuslayanan/{id}', [ServicesController::class, 'hapuslayanan'])->name('hapuslayanan');
 
-
     Route::get('/weights', [WeightController::class, 'index'])->name('weights.index');
+
+    Route::get('/berat-live', [BeratLiveController::class, 'index']);
+    Route::get('/get-latest-weight', [BeratLiveController::class, 'getLatestWeight']);
 });
 
-// Routes accessible only to admin
+// RUTE UNTUK HAK AKSES ADMIN SAJA
 Route::middleware(['auth', 'checkRole:admin'])->group(function () {
-    //courier
+    //courier/kurir
     Route::get('/kurir', [CourierController::class, 'index'])->name('courier-index');
     Route::post('/tambahkurir', [CourierController::class, 'tambahkurir'])->name('tambahkurir');
     Route::post('/editkurir/{id}', [CourierController::class, 'editkurir'])->name('editkurir');
     Route::delete('/hapuskurir/{id}', [CourierController::class, 'hapuskurir'])->name('hapuskurir');
-    //customers
+    //customers/pelanggan
     Route::get('/pelanggan', [CustomersController::class, 'index'])->name('customers-index');
     Route::post('/tambahpelanggan', [CustomersController::class, 'tambahpelanggan'])->name('tambahpelanggan');
     Route::post('/editpelanggan/{id}', [CustomersController::class, 'editpelanggan'])->name('editpelanggan');
     Route::delete('/hapuspelanggan/{id}', [CustomersController::class, 'hapuspelanggan'])->name('hapuspelanggan');
 });
 
+// RUTE UNTUK HAK AKSES PELANGGAN SAJA
 Route::middleware(['auth', 'checkRole:pelanggan'])->group(function () {
     Route::post('/tambahpesanan', [OrderController::class, 'tambahpesanan'])->name('tambahpesanan');
 
+    // TRANSAKSI PELANGGAN
     Route::post('/bayartransaksi/{id}', [TransactionsController::class, 'bayartransaksi'])->name('bayartransaksi');
 });

@@ -23,7 +23,8 @@ class Transaksi extends Model
         'tgl_diambil',
         'total_bayar',
         'status_pembayaran',
-        'bukti_pembayaran'
+        'bukti_pembayaran',
+        'status_pengantaran'
     ];
 
     public function user()

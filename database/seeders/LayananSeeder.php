@@ -17,13 +17,13 @@ class LayananSeeder extends Seeder
     {
         // Contoh data layanan
         $layanan = [
-            ['jenis_layanan' => 'Cuci', 'harga' => '4000'],
-            ['jenis_layanan' => 'Cuci Setrika', 'harga' => '6000'],
-            ['jenis_layanan' => 'Setrika', 'harga' => '4000'],
-            ['jenis_layanan' => 'Cuci Ekspress', 'harga' => '8000'],
-            ['jenis_layanan' => 'Selimut', 'harga' => '8000'],
-            ['jenis_layanan' => 'Sprei', 'harga' => '10000'],
-            ['jenis_layanan' => 'Handuk', 'harga' => '5000'],
+            ['jenis_layanan' => 'Cuci', 'harga' => '4000', 'jenis_satuan' => 'kiloan'],
+            ['jenis_layanan' => 'Cuci Setrika', 'harga' => '6000', 'jenis_satuan' => 'kiloan'],
+            ['jenis_layanan' => 'Setrika', 'harga' => '4000', 'jenis_satuan' => 'kiloan'],
+            ['jenis_layanan' => 'Cuci Ekspress', 'harga' => '8000', 'jenis_satuan' => 'kiloan'],
+            ['jenis_layanan' => 'Selimut', 'harga' => '8000', 'jenis_satuan' => 'satuan'],
+            ['jenis_layanan' => 'Sprei', 'harga' => '10000', 'jenis_satuan' => 'satuan'],
+            ['jenis_layanan' => 'Handuk', 'harga' => '5000', 'jenis_satuan' => 'satuan'],
         ];
         // Masukkan data layanan ke dalam tabel
         foreach ($layanan as $p) {

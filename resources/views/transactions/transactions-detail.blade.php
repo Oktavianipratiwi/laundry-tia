@@ -46,12 +46,21 @@ $isNavbar = false;
                         <input type="text" id="basic-default-phone" name="no_telp" class="form-control phone-mask" aria-label="658 799 8941" aria-describedby="basic-default-phone" value="{{ $transaksi->user->no_telp }}" readonly />
                     </div>
                 </div>
+                @if($transaksi->total_berat != null)
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone">Total Berat</label>
                     <div class="col-sm-10">
                         <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask" aria-label="658 799 8941" aria-describedby="basic-default-phone" value="{{ $transaksi->total_berat }} Kg" readonly />
                     </div>
                 </div>
+                @elseif($transaksi->jumlah != null)
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label" for="basic-default-phone">Jumlah</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask" aria-label="658 799 8941" aria-describedby="basic-default-phone" value="{{ $transaksi->jumlah }} Pcs" readonly />
+                    </div>
+                </div>
+                @endif
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone">Diskon</label>
                     <div class="col-sm-10">

@@ -15,6 +15,8 @@
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}">
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/laundry.png') }}" />
+  @stack('styles')
+
 
 
 
@@ -36,6 +38,9 @@
 
   <!-- Include Scripts -->
   @include('layouts/sections/scripts')
+
+  @stack('scripts')
+
 
 </body>
 

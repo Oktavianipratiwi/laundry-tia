@@ -12,7 +12,7 @@
 
 @section('page-script')
 <script src="{{asset('assets/js/dashboards-analytics.js')}}"></script>
-<script>
+<!-- <script>
   document.addEventListener('DOMContentLoaded', function() {
     var options = {
       chart: {
@@ -37,12 +37,12 @@
     var chart = new ApexCharts(document.querySelector("#customerRegistrationChart"), options);
     chart.render();
   });
-</script>
+</script> -->
 @endsection
 
 @section('content')
 <div class="row">
-  <div class="col-lg-8 mb-4 order-0">
+  <div class="col-lg-12 mb-4 order-0">
     <div class="card">
       <div class="d-flex align-items-end row">
         <div class="col-sm-7">
@@ -61,7 +61,7 @@
       </div>
     </div>
   </div>
-  <div class="col-lg-4 col-md-4 order-1">
+  <!-- <div class="col-lg-4 col-md-4 order-1">
     <div class="row">
       <div class="col-lg-6 col-md-12 col-6 mb-4">
         <div class="card">
@@ -108,9 +108,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- Total Revenue -->
-  <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+  <!-- <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
     <div class="card">
       <div class="row row-bordered g-0">
         <div class="col-md-12">
@@ -120,9 +120,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <!--/ Total Revenue -->
-  <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
+  <!-- <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
     <div class="row">
       <div class="col-6 mb-4">
         <div class="card">
@@ -188,6 +188,6 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
 @endsection

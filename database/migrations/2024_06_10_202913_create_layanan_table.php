@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('jenis_layanan');
             $table->String('harga'); // Harga dalam bentuk decimal (8 digit, 2 digit di belakang koma)
-            $table->enum('jenis_satuan', ['satuan', 'kilioan']);
+            $table->enum('jenis_satuan', ['satuan', 'kiloan']);
             $table->timestamps();
         });
     }

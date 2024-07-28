@@ -13,7 +13,14 @@
 
 <div class="card">
     @if(auth()->user()->role != 'pelanggan')
-    <h5 class="card-header">Daftar Pesanan</h5>
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Daftar Pesanan</h5>
+        <form action="{{url('berat-live')}}" method="GET">
+            <button type="submit" class="btn btn-primary">
+                <span class="tf-icons bx bx-check-circle me-1"></span>Timbang!
+            </button>
+        </form>
+    </div>
     @else
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Daftar Pesanan</h5>
@@ -22,6 +29,7 @@
         </button>
     </div>
     @endif
+
     <div class="table-responsive text-nowrap">
         @if(auth()->user()->role != 'pelanggan')
         <table class="table">
@@ -33,7 +41,7 @@
                     <th>Alamat</th>
                     <th>Kontak</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th class="text-center" colspan="2">Actions</th>
                 </tr>
             </thead>
             @if($pesananDaftar->isEmpty())
@@ -55,7 +63,9 @@
                         @elseif($row->status_pemesanan == 'belum diproses')
                         <span class="badge bg-label-warning me-1">Belum diproses</span>
                         @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
-                        <span class="badge bg-label-info me-1">kurir menuju lokasi</span>
+                        <span class="badge bg-label-info me-1">kurir jemput pesanan</span>
+                        @elseif($row->status_pemesanan == 'antar pesanan')
+                        <span class="badge bg-label-info me-1">kurir antar pesanan</span>
                         @elseif($row->status_pemesanan == 'sudah diperiksa')
                         <span class="badge bg-label-primary me-1">Sudah diperiksa</span>
                         @endif
@@ -63,20 +73,37 @@
                     @if(auth()->user()->role == 'admin' || auth()->user()->role == 'pegawai')
                     <td>
                         @if($row->status_pemesanan == 'belum diproses')
-                        <form action="{{ route('konfirmasipesanan', $row->id) }}" method="POST">
+                        <form action="{{ route('konfirmasipesananjemput', $row->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-outline-primary">
-                                <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Konfirmasi
+                                <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Jemput Pesanan
                             </button>
                         </form>
                         @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
-                        <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksi{{ $row->id }}" class=" btn btn-outline-primary">
-                            <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
-                        </button> -->
                         <button type="button" data-bs-toggle="modal" data-bs-target="#modalTipeLayanan{{ $row->id }}" class=" btn btn-outline-primary">
                             <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
                         </button>
                         @elseif($row->status_pemesanan == 'sudah diproses')
+                        <form action="{{ route('konfirmasipesananantar', $row->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-primary">
+                                <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Antar Pesanan
+                            </button>
+                        </form>
+                        @elseif($row->status_pemesanan == 'antar pesanan')
+                        <form action="{{ route('pesananselesai', $row->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-outline-primary">
+                                <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Pesanan Selesai
+                            </button>
+                        </form>
+                        @elseif($row->status_pemesanan == 'sudah diperika')
+                        <button type="submit" class="btn btn-outline-primary">
+                            <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Pesanan Selesai
+                        </button>
+                        @endif
+                    </td>
+                    <td>
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
@@ -84,13 +111,13 @@
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusPesanan{{ $row->id }}"><i class="bx bx-trash me-1"></i> Delete</a>
                             </div>
                         </div>
-                        @endif
                     </td>
                     @endif
                 </tr>
             </tbody>
             @endforeach
         </table>
+
         @else
         <table class="table">
             <thead>
@@ -118,7 +145,11 @@
                         @elseif($row->status_pemesanan == 'belum diproses')
                         <span class="badge bg-label-warning me-1">Belum diproses</span>
                         @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
-                        <span class="badge bg-label-info me-1">Kurir menuju lokasi</span>
+                        <span class="badge bg-label-info me-1">kurir jemput pesanan</span>
+                        @elseif($row->status_pemesanan == 'antar pesanan')
+                        <span class="badge bg-label-info me-1">kurir antar pesanan</span>
+                        @elseif($row->status_pemesanan == 'sudah diperiksa')
+                        <span class="badge bg-label-primary me-1">Sudah diperiksa</span>
                         @endif
                     </td>
                 </tr>
@@ -130,7 +161,47 @@
     </div>
 </div>
 
-<!-- MODAL TIPE LAYANAN -->
+<!-- MODAL TAMBAH PESANAN UNTUK PELANGGAN-->
+<div class="modal fade" id="modalTambahPesanan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Tambah Pesanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('tambahpesanan') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="dobBasic" class="form-label">Tanggal Pemesanan</label>
+                            <input type="date" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="emailBasic" class="form-label">Alamat</label>
+                            <textarea class="form-control" name="alamat" placeholder="Masukkan Alamat Lengkap">{{ auth()->user()->alamat }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="dobBasic" class="form-label">Kontak</label>
+                            <input type="number" name="no_telp" class="form-control" placeholder="Silahkan masukkan Nomor Hp" value="{{ auth()->user()->no_telp }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- END -->
+
+<!-- MODAL TIPE LAYANAN UNTUK KURIR DAN ADMIN-->
 @foreach($pesananDaftar as $row)
 <div class="modal fade" id="modalTipeLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -151,7 +222,7 @@
 </div>
 @endforeach
 
-<!-- MODAL BUAT TRANSAKSI SATUAN-->
+<!-- MODAL BUAT TRANSAKSI SATUAN KURIR DAN ADMIN-->
 @foreach($pesananDaftar as $row)
 <div class=" modal fade" id="modalBuatTransaksiSatuan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -172,12 +243,12 @@
                     </div>
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="emailBasic" class="form-label"><b>Layanan</b></label>
-                            <select id="defaultSelect" class="form-select" name="layanan_id">
+                            <label for="defaultSelect" class="form-label"><b>Layanan</b></label>
+                            <select id="defaultSelect" class="form-select" name="layanan_id" required oninvalid="this.setCustomValidity('Pilih Jenis Layanan Terlebih dahulu.')" oninput="this.setCustomValidity('')">
                                 <option disabled selected value="">Pilih Jenis Layanan</option>
                                 @foreach($layananDaftar as $row)
                                 @if($row->jenis_satuan == 'satuan')
-                                <option value="{{ $row->id }}">{{ $row->jenis_layanan}}</option>
+                                <option value=" {{ $row->id }}">{{ $row->jenis_layanan}}</option>
                                 @endif
                                 @endforeach
                             </select>
@@ -204,9 +275,9 @@
                     <div class=" row g-2">
                         <div class="col mb-1">
                             <label for="emailBasic" class="form-label"><b>Status</b></label>
-                            <select id="defaultSelect" class="form-select" name="status_pembayaran">
+                            <select id="defaultSelect" class="form-select" name="status_pembayaran" required oninvalid="this.setCustomValidity('Pilih Status Pembayaran Terlebih dahulu.')" oninput="this.setCustomValidity('')">
                                 <option disabled selected value="">Pilih Status Pembayaran</option>
-                                <option value="belum lunas">Belum Lunas</option>
+                                <option value=" belum lunas">Belum Lunas</option>
                                 <option value="lunas">Lunas</option>
                             </select>
                         </div>
@@ -245,12 +316,13 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="emailBasic" class="form-label"><b>Layanan</b></label>
-                            <select id="defaultSelect" class="form-select" name="layanan_id">
+                            <select id="defaultSelect" class="form-select" name="layanan_id" required oninvalid="this.setCustomValidity('Pilih Jenis Layanan Terlebih dahulu.')" oninput="this.setCustomValidity('')">
                                 <option disabled selected value="">Pilih Jenis Layanan</option>
                                 @foreach($layananDaftar as $row)
                                 @if($row->jenis_satuan == 'kiloan')
                                 <option value="{{ $row->id }}">{{ $row->jenis_layanan}}</option>
-                                @endif @endforeach
+                                @endif
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -275,9 +347,9 @@
                     <div class=" row g-2">
                         <div class="col mb-1">
                             <label for="emailBasic" class="form-label"><b>Status</b></label>
-                            <select id="defaultSelect" class="form-select" name="status_pembayaran">
+                            <select id="defaultSelect" class="form-select" name="status_pembayaran" required oninvalid="this.setCustomValidity('Pilih Status Pembayaran Terlebih dahulu.')" oninput="this.setCustomValidity('')">
                                 <option disabled selected value="">Pilih Status Pembayaran</option>
-                                <option value="belum lunas">Belum Lunas</option>
+                                <option value=" belum lunas">Belum Lunas</option>
                                 <option value="lunas">Lunas</option>
                             </select>
                         </div>
@@ -292,46 +364,6 @@
     </div>
 </div>
 @endforeach
-<!-- END -->
-
-<!-- MODAL TAMBAH PESANAN -->
-<div class="modal fade" id="modalTambahPesanan" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Tambah Pesanan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('tambahpesanan') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="row g-2">
-                        <div class="col mb-3">
-                            <label for="dobBasic" class="form-label">Tanggal Pemesanan</label>
-                            <input type="date" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-3">
-                            <label for="emailBasic" class="form-label">Alamat</label>
-                            <textarea class="form-control" name="alamat" placeholder="Masukkan Alamat Lengkap"></textarea>
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-3">
-                            <label for="dobBasic" class="form-label">Kontak</label>
-                            <input type="number" name="no_telp" class="form-control" placeholder="Silahkan masukkan Nomor Hp">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <!-- END -->
 
 <!-- MODAL EDIT PESANAN -->
