@@ -29,7 +29,7 @@ class AuthController extends Controller
 
     public function daftaraksi(Request $request)
     {
-        // Perform validation to ensure data integrity
+        // Lakukan validasi untuk memastikan integritas data
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'alamat' => 'required|string',

@@ -1,3 +1,4 @@
+
 @extends('layouts/contentNavbarLayout')
 
 @section('title', 'Transaksi')
@@ -38,8 +39,10 @@
                     <td>{{ $row->layanan->jenis_layanan }}</td>
                     <td>{{ $row->total_berat }} Kg</td>
                     <td>Rp{{ number_format($row->total_bayar, 0, ',', '.') }}</td>
-                    @if($row->status_pembayaran == 'lunas')
-                    <td><span class="badge bg-label-success me-1">Lunas</span></td>
+                    @if($row->status_pembayaran == 'lunas' && $row->bukti_pembayaran != null)
+                    <td><span class="badge bg-label-success me-1">Lunas via transfer</span></td>
+                    @elseif($row->status_pembayaran == 'lunas')
+                    <td><span class="badge bg-label-success me-1">Lunas via cash</span></td>
                     @elseif($row->status_pembayaran == 'belum lunas')
                     <td><span class="badge bg-label-warning me-1">Belum Lunas</span></td>
                     @elseif($row->pemesanan->status_pemesanan == 'sudah diperiksa')
@@ -222,4 +225,4 @@
         </div>
         @endforeach
 
-        @endsection
+   @endsection

@@ -31,7 +31,9 @@ class TransactionsController extends Controller
     {
         $transaksi = Transaksi::find($id);
 
-        $transaksi->pemesanan->status_pemesanan = 'sudah diperiksa';
+        $transaksi->status_pembayaran = 'lunas';
+
+        // $transaksi->pemesanan->status_pemesanan = 'sudah diperiksa';
         $transaksi->save();
 
         return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dikonfirmasi.');

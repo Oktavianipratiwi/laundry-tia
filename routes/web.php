@@ -127,6 +127,7 @@ Route::post('/daftaraksi', [AuthController::class, 'daftaraksi'])->name('daftara
 
 // Routes accessible to admin, pegawai, and pelanggan
 Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function () {
+    Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard');
     // order
     Route::get('/pesanan', [OrderController::class, 'index'])->name('order-index');
     // transactions

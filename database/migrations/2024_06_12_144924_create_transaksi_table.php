@@ -14,7 +14,7 @@ class CreateTransaksiTable extends Migration
             $table->unsignedBigInteger('layanan_id');
             $table->unsignedBigInteger('pemesanan_id');
             $table->float('total_berat')->nullable();
-            $table->int('jumlah')->nullable();
+            $table->integer('jumlah')->nullable();
             $table->integer('diskon')->default(0);
             $table->dateTime('tgl_ditimbang');
             $table->dateTime('tgl_diambil')->nullable();

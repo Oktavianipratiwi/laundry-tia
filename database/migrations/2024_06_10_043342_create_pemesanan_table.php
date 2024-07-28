@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('pemesanan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('tgl_pemesanan');
             $table->string('alamat');
             $table->string('no_telp');
-            $table->enum('status_pemesanan', ['sudah diproses', 'belum diproses', 'pegawai menuju lokasi','sudah diperiksa'])->default('belum diproses');
+            $table->enum('status_pemesanan', ['sudah diproses', 'belum diproses', 'pegawai menuju lokasi', 'sudah diperiksa'])->default('belum diproses');
             $table->timestamps();
         });
     }
@@ -29,9 +29,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('pemesanan');
-         Schema::table('pemesanans', function (Blueprint $table) {
+        Schema::table('pemesanans', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
-        });
-    }
+    });
+}
 };
