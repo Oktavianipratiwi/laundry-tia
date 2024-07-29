@@ -43,6 +43,7 @@
                     <!-- <td>{{ \Carbon\Carbon::parse($row->created_at)->translatedFormat('l, j F Y') }}</td> -->
                     <td>Rp{{ number_format($row->harga, 0, ',', '.') }}</td>
                     <td>{{ $row->jenis_satuan }}</td>
+
                     @if(auth()->user()->role == 'admin')
                     <td>
                         <div class="dropdown">
@@ -74,8 +75,8 @@
                 <div class="modal-body">
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="dobBasic" class="form-label">Jenis Layanan</label>
-                            <input type="text" name="jenis_layanan" class="form-control" placeholder="Masukkan Jenis Layanan">
+                            <label for="dobBasic" class="form-label">Nama Layanan</label>
+                            <input type="text" name="jenis_layanan" class="form-control" placeholder="Masukkan Nama Layanan">
                         </div>
                     </div>
                     <div class="row g-2">
@@ -86,9 +87,9 @@
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="emailBasic" class="form-label">Jumlah</label>
+                            <label for="emailBasic" class="form-label">Jenis Layanan</label>
                             <select id="defaultSelect" class="form-select" name="jenis_satuan">
-                                <option disabled selected value="">Pilih Jumlah</option>
+                                <option disabled selected value="">Pilih Jenis</option>
                                 <option value="satuan">Satuan</option>
                                 <option value="kiloan">Kiloan</option>
                             </select>

@@ -120,14 +120,21 @@ Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic')
 
 // ROUTE UNTUK PROJEK TA ADA DIBAWAH INI
 
-// LOGIN DAN REGISTER 
+// LOGIN
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/loginaksi', [AuthController::class, 'loginaksi'])->name('loginaksi');
 
+// REGISTER
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/daftaraksi', [AuthController::class, 'daftaraksi'])->name('daftaraksi');
 
+// VERIFIKASI EMAIL
+Route::get('/validasiotp', [AuthController::class, 'validasiotp'])->name('validasiotp');
+Route::post('/validasiotpaksi', [AuthController::class, 'validasiotpaksi'])->name('validasiotpaksi');
+
+// LOGOUT
 Route::get('/logoutaksi', [AuthController::class, 'logoutaksi'])->name('logoutaksi');
+
 
 // RUTE UNTUK HAK AKSES ADMIN, PEGAWAI, DAN PELANGGAN
 Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function () {
