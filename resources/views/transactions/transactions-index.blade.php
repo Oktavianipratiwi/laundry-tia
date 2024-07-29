@@ -1,3 +1,4 @@
+
 @extends('layouts/contentNavbarLayout')
 
 @section('title', 'Transaksi')
@@ -243,4 +244,4 @@
         </div>
         @endforeach
 
-        @endsection
+   @endsection

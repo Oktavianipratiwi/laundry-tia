@@ -19,8 +19,8 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'administrator',
             'alamat' => 'Padang',
-            'no_telp' => '081374649623',
-            'email' => 'infinitytech@gmail.com',
+            'no_telp' => '081212121212',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('admin'),
             'role' => 'admin',
             'created_at' => now(),
@@ -30,8 +30,8 @@ class UserSeeder extends Seeder
         // Tambahkan data pelanggan
         DB::table('users')->insert([
             'name' => 'user',
-            'alamat' => 'Pasar Baru',
-            'no_telp' => '083174649623',
+            'alamat' => 'Limau Manis',
+            'no_telp' => '081234556789',
             'email' => 'user@gmail.com',
             'password' => Hash::make('user'),
             'role' => 'pelanggan',
@@ -41,9 +41,9 @@ class UserSeeder extends Seeder
 
         // Tambahkan data pegawai
         DB::table('users')->insert([
-            'name' => 'dini',
-            'alamat' => 'Solok',
-            'no_telp' => '081274649623',
+            'name' => 'pegawai',
+            'alamat' => 'Pariaman',
+            'no_telp' => '081345678909',
             'email' => 'pegawai@gmail.com',
             'password' => Hash::make('pegawai'),
             'role' => 'pegawai',
