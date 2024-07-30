@@ -1,4 +1,3 @@
-
 @extends('layouts/contentNavbarLayout')
 
 @section('title', 'Transaksi')
@@ -13,7 +12,7 @@
 @endif
 
 <div class="card">
-    @if(auth()->user()->role != 'pelanggan')
+    @if(auth()->user()->role == 'admin')
     <h5 class="card-header">Daftar Transaksi Kiloan</h5>
     <div class="table-responsive text-nowrap">
         <table class="table">
@@ -110,10 +109,12 @@
                         <td>{{ $no++ }}</td>
                         <td>{{ $row->user->name }}</td>
                         <td>{{ $row->layanan->jenis_layanan }}</td>
-                        <td>{{ $row->jumlah }}</td>
+                        <td>{{ $row->jumlah }} Pcs</td>
                         <td>Rp{{ number_format($row->total_bayar, 0, ',', '.') }}</td>
-                        @if($row->status_pembayaran == 'lunas')
-                        <td><span class="badge bg-label-success me-1">Lunas</span></td>
+                        @if($row->status_pembayaran == 'lunas' && $row->bukti_pembayaran != null)
+                        <td><span class="badge bg-label-success me-1">Lunas via transfer</span></td>
+                        @elseif($row->status_pembayaran == 'lunas')
+                        <td><span class="badge bg-label-success me-1">Lunas via cash</span></td>
                         @elseif($row->status_pembayaran == 'belum lunas')
                         <td><span class="badge bg-label-warning me-1">Belum Lunas</span></td>
                         @elseif($row->pemesanan->status_pemesanan == 'sudah diperiksa')
@@ -150,7 +151,7 @@
             </table>
 
             <!-- untuk pelanggan saja -->
-            @else
+            @elseif(auth()->user()->role == 'pelanggan')
             <h5 class="card-header">Daftar Transaksi Saya</h5>
             <div class="table-responsive text-nowrap">
 
@@ -193,7 +194,7 @@
             </div>
         </div>
 
-        <!-- MODAL KONFIRMASI TRANSAKSI UNTUK ADMIN DAN KURIR -->
+        <!-- MODAL KONFIRMASI TRANSAKSI UNTUK ADMIN  -->
         @foreach($transaksiDaftar as $key => $row)
         <div class="modal fade" id="modalKonfirmasiTransaksi{{ $row->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -219,7 +220,7 @@
 
         <!-- END -->
 
-        <!-- MODAL HAPUS TRANSAKSI UNTUK ADMIN DAN KURIR -->
+        <!-- MODAL HAPUS TRANSAKSI UNTUK ADMIN  -->
         @foreach($transaksiDaftar as $row)
         <div class="modal fade" id="modalHapusTransaksi{{ $row->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -244,4 +245,4 @@
         </div>
         @endforeach
 
-   @endsection
+        @endsection

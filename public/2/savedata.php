@@ -1,4 +1,5 @@
 <?php
+//Koneksi ke Database:
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -12,6 +13,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Menerima dan Memproses Data POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
@@ -25,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = $checkStmt->get_result();
 
         if ($result->num_rows > 0) {
+
             // Data sudah ada, lakukan update
             $row = $result->fetch_assoc();
             $id = $row['id'];

@@ -81,6 +81,40 @@ class OrderController extends Controller
         return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk penjemputan.');
     }
 
+    // UNTUK KURIR
+    public function konfirmasipesananantar($id)
+    {
+        $pesanan = Pemesanan::findOrFail($id);
+
+        $user = User::findOrFail($pesanan->id_user);
+
+        $kurir = auth()->user();
+        Mail::to($user->email)->send(new AntarPesanan($user->name, $kurir->name, $kurir->no_telp));
+
+        $pesanan->status_pemesanan = 'antar pesanan';
+        $pesanan->save();
+
+        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
+    }
+
+    public function pesananselesai($id)
+    {
+        $pesanan = Pemesanan::findOrFail($id);
+
+        $transaksi = Transaksi::where('pemesanan_id', $pesanan->id)->first();
+
+        if ($transaksi) {
+            // Jika transaksi ditemukan, ubah status pengantaran
+            $transaksi->status_pengantaran = 'sudah diantar';
+            $transaksi->save();
+        }
+
+        $pesanan->status_pemesanan = 'sudah diperiksa';
+        $pesanan->save();
+
+        return redirect()->route('order-index')->with('success', 'Pesanan selesai.');
+    }
+
     // UTK KURIR
     public function tambahtransaksikiloan(Request $request, $id)
     {
@@ -117,7 +151,7 @@ class OrderController extends Controller
         $pesanan->status_pemesanan = 'sudah diproses';
         $pesanan->save();
 
-        return redirect()->route('transactions-index')->with('success', 'Transaksi berhasil.');
+        return redirect()->route('order-index')->with('success', 'Transaksi berhasil.');
     }
 
     // UTK KURIR
@@ -157,42 +191,9 @@ class OrderController extends Controller
         $pesanan->status_pemesanan = 'sudah diproses';
         $pesanan->save();
 
-        return redirect()->route('transactions-index')->with('success', 'Transaksi berhasil.');
+        return redirect()->route('order-index')->with('success', 'Transaksi berhasil.');
     }
 
-    // UNTUK KURIR
-    public function konfirmasipesananantar($id)
-    {
-        $pesanan = Pemesanan::findOrFail($id);
-
-        $user = User::findOrFail($pesanan->id_user);
-
-        $kurir = auth()->user();
-        Mail::to($user->email)->send(new AntarPesanan($user->name, $kurir->name, $kurir->no_telp));
-
-        $pesanan->status_pemesanan = 'antar pesanan';
-        $pesanan->save();
-
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
-    }
-
-    public function pesananselesai($id)
-    {
-        $pesanan = Pemesanan::findOrFail($id);
-
-        $transaksi = Transaksi::where('pemesanan_id', $pesanan->id)->first();
-
-        if ($transaksi) {
-            // Jika transaksi ditemukan, ubah status pengantaran
-            $transaksi->status_pengantaran = 'sudah diantar';
-            $transaksi->save();
-        }
-
-        $pesanan->status_pemesanan = 'sudah diperiksa';
-        $pesanan->save();
-
-        return redirect()->route('order-index')->with('success', 'Pesanan selesai.');
-    }
 
     public function editpesanan(Request $request, $id)
     {

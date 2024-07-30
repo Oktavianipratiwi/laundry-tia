@@ -54,8 +54,6 @@ use App\Http\Controllers\menu\TransactionsController;
 use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\menu\WeightController;
 
-// Main Page Route
-Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -138,11 +136,9 @@ Route::get('/logoutaksi', [AuthController::class, 'logoutaksi'])->name('logoutak
 
 // RUTE UNTUK HAK AKSES ADMIN, PEGAWAI, DAN PELANGGAN
 Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function () {
+    Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard');
     // order/pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('order-index');
-    // transactions/transaksi
-    Route::get('/transaksi', [TransactionsController::class, 'index'])->name('transactions-index');
-    Route::get('/detailtransaksi/{id}', [TransactionsController::class, 'detailtransaksi'])->name('detailtransaksi');
     // services/layanan
     Route::get('/layanan', [ServicesController::class, 'index'])->name('services-index');
 
@@ -151,32 +147,14 @@ Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function
     Route::post('/editprofile', [ProfileController::class, 'editprofile'])->name('editprofile');
 });
 
-// RUTE UNTUK HAK AKSES ADMIN DAN PEGAWAI
-Route::middleware(['auth', 'checkRole:admin,pegawai'])->group(function () {
-    // order/pesanan
-    Route::post('/konfirmasipesananantar/{id}', [OrderController::class, 'konfirmasipesananantar'])->name('konfirmasipesananantar');
-    Route::post('/konfirmasipesananjemput/{id}', [OrderController::class, 'konfirmasipesananjemput'])->name('konfirmasipesananjemput');
-    Route::post('/pesananselesai/{id}', [OrderController::class, 'pesananselesai'])->name('pesananselesai');
-    Route::post('/editpesanan/{id}', [OrderController::class, 'editpesanan'])->name('editpesanan');
-    Route::delete('/hapuspesanan/{id}', [OrderController::class, 'hapuspesanan'])->name('hapuspesanan');
+// RUTE UTK ADMIN DAN PELANGGAN
+Route::middleware(['auth', 'checkRole:admin,pelanggan'])->group(function () {
     // transactions/transaksi
-    Route::post('/tambahtransaksikiloan/{id}', [OrderController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
-    Route::post('/tambahtransaksisatuan/{id}', [OrderController::class, 'tambahtransaksisatuan'])->name('tambahtransaksisatuan');
-    Route::post('/konfirmasitransaksi/{id}', [TransactionsController::class, 'konfirmasitransaksi'])->name('konfirmasitransaksi');
-    Route::delete('/hapustransaksi/{id}', [TransactionsController::class, 'hapustransaksi'])->name('hapustransaksi');
-
-    // services/layanan
-    Route::post('/tambahlayanan', [ServicesController::class, 'tambahlayanan'])->name('tambahlayanan');
-    Route::post('/editlayanan/{id}', [ServicesController::class, 'editlayanan'])->name('editlayanan');
-    Route::delete('/hapuslayanan/{id}', [ServicesController::class, 'hapuslayanan'])->name('hapuslayanan');
-
-    Route::get('/weights', [WeightController::class, 'index'])->name('weights.index');
-
-    Route::get('/berat-live', [BeratLiveController::class, 'index']);
-    Route::get('/get-latest-weight', [BeratLiveController::class, 'getLatestWeight']);
+    Route::get('/transaksi', [TransactionsController::class, 'index'])->name('transactions-index');
+    Route::get('/detailtransaksi/{id}', [TransactionsController::class, 'detailtransaksi'])->name('detailtransaksi');
 });
 
-// RUTE UNTUK HAK AKSES ADMIN SAJA
+// RUTE UTK ADMIN SAJA
 Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     //courier/kurir
     Route::get('/kurir', [CourierController::class, 'index'])->name('courier-index');
@@ -188,6 +166,31 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     Route::post('/tambahpelanggan', [CustomersController::class, 'tambahpelanggan'])->name('tambahpelanggan');
     Route::post('/editpelanggan/{id}', [CustomersController::class, 'editpelanggan'])->name('editpelanggan');
     Route::delete('/hapuspelanggan/{id}', [CustomersController::class, 'hapuspelanggan'])->name('hapuspelanggan');
+    // services/layanan
+    Route::post('/tambahlayanan', [ServicesController::class, 'tambahlayanan'])->name('tambahlayanan');
+    Route::post('/editlayanan/{id}', [ServicesController::class, 'editlayanan'])->name('editlayanan');
+    Route::delete('/hapuslayanan/{id}', [ServicesController::class, 'hapuslayanan'])->name('hapuslayanan');
+    // transactions/transaksi
+    Route::post('/tambahtransaksikiloan/{id}', [OrderController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
+    Route::post('/tambahtransaksisatuan/{id}', [OrderController::class, 'tambahtransaksisatuan'])->name('tambahtransaksisatuan');
+    Route::post('/konfirmasitransaksi/{id}', [TransactionsController::class, 'konfirmasitransaksi'])->name('konfirmasitransaksi');
+    Route::delete('/hapustransaksi/{id}', [TransactionsController::class, 'hapustransaksi'])->name('hapustransaksi');
+});
+
+// RUTE UTK PEGAWAI SAJA
+Route::middleware(['auth', 'checkRole:pegawai'])->group(function () {
+    // order/pesanan
+    Route::post('/konfirmasipesananantar/{id}', [OrderController::class, 'konfirmasipesananantar'])->name('konfirmasipesananantar');
+    Route::post('/konfirmasipesananjemput/{id}', [OrderController::class, 'konfirmasipesananjemput'])->name('konfirmasipesananjemput');
+    Route::post('/pesananselesai/{id}', [OrderController::class, 'pesananselesai'])->name('pesananselesai');
+    Route::post('/editpesanan/{id}', [OrderController::class, 'editpesanan'])->name('editpesanan');
+    Route::delete('/hapuspesanan/{id}', [OrderController::class, 'hapuspesanan'])->name('hapuspesanan');
+
+    // BERAT TIMBANGAN
+    Route::get('/weights', [WeightController::class, 'index'])->name('weights.index');
+
+    Route::get('/berat-live', [BeratLiveController::class, 'index']);
+    Route::get('/get-latest-weight', [BeratLiveController::class, 'getLatestWeight']);
 });
 
 // RUTE UNTUK HAK AKSES PELANGGAN SAJA

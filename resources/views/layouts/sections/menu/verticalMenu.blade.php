@@ -37,6 +37,11 @@
     $showMenu = false;
     }
     }
+    if ($userRole === 'pegawai') {
+    if (in_array($menu->slug, ['transactions-index'])) {
+    $showMenu = false;
+    }
+    }
 
     $activeClass = null;
     $currentRouteName = Route::currentRouteName();

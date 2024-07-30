@@ -12,7 +12,7 @@
 @endif
 
 <div class="card">
-    @if(auth()->user()->role != 'pelanggan')
+    @if(auth()->user()->role == 'pegawai')
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Daftar Pesanan</h5>
         <form action="{{url('berat-live')}}" method="GET">
@@ -21,7 +21,11 @@
             </button>
         </form>
     </div>
-    @else
+
+    @elseif(auth()->user()->role == 'admin')
+    <h5 class="card-header">Daftar Pesanan</h5>
+
+    @elseif(auth()->user()->role == 'pelanggan')
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Daftar Pesanan</h5>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPesanan">
@@ -31,7 +35,7 @@
     @endif
 
     <div class="table-responsive text-nowrap">
-        @if(auth()->user()->role != 'pelanggan')
+        @if(auth()->user()->role == 'pegawai')
         <table class="table">
             <thead>
                 <tr>
@@ -70,7 +74,7 @@
                         <span class="badge bg-label-primary me-1">Sudah diperiksa</span>
                         @endif
                     </td>
-                    @if(auth()->user()->role == 'admin' || auth()->user()->role == 'pegawai')
+                    @if(auth()->user()->role == 'pegawai')
                     <td>
                         @if($row->status_pemesanan == 'belum diproses')
                         <form action="{{ route('konfirmasipesananjemput', $row->id) }}" method="POST">
@@ -118,6 +122,7 @@
             @endforeach
         </table>
 
+        <!-- admin & pelanggan -->
         @else
         <table class="table">
             <thead>
@@ -201,7 +206,7 @@
 </div>
 <!-- END -->
 
-<!-- MODAL TIPE LAYANAN UNTUK KURIR DAN ADMIN-->
+<!-- MODAL TIPE LAYANAN UNTUK KURIR -->
 @foreach($pesananDaftar as $row)
 <div class="modal fade" id="modalTipeLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -222,7 +227,7 @@
 </div>
 @endforeach
 
-<!-- MODAL BUAT TRANSAKSI SATUAN KURIR DAN ADMIN-->
+<!-- MODAL BUAT TRANSAKSI SATUAN UTK KURIR-->
 @foreach($pesananDaftar as $row)
 <div class=" modal fade" id="modalBuatTransaksiSatuan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -294,7 +299,7 @@
 @endforeach
 <!-- END -->
 
-<!-- MODAL BUAT TRANSAKSI KILOAN -->
+<!-- MODAL BUAT TRANSAKSI KILOAN UTK KURIR-->
 @foreach($pesananDaftar as $row)
 <div class="modal fade" id="modalBuatTransaksiKiloan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">

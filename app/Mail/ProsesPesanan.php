@@ -36,7 +36,7 @@ class ProsesPesanan extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Tia Laundry',
+            subject: 'Tia Laundry - Proses Pesanan',
         );
     }
 
