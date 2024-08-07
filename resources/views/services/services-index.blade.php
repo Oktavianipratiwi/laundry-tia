@@ -32,6 +32,7 @@
                     <th>Jenis Layanan</th>
                     <th>Harga</th>
                     <th>Jumlah</th>
+                    <th>Durasi</th>
                     @if(auth()->user()->role == 'admin')
                     <th>Actions</th>
                     @endif
@@ -45,7 +46,7 @@
                     <!-- <td>{{ \Carbon\Carbon::parse($row->created_at)->translatedFormat('l, j F Y') }}</td> -->
                     <td>Rp{{ number_format($row->harga, 0, ',', '.') }}</td>
                     <td>{{ $row->jenis_satuan }}</td>
-
+                    <td>{{ $row->durasi_layanan }}</td>
                     @if(auth()->user()->role == 'admin')
                     <td>
                         <div class="dropdown">
@@ -97,6 +98,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="emailBasic" class="form-label">Durasi Layanan</label>
+                            <select id="defaultSelect" class="form-select" name="durasi_layanan">
+                                <option disabled selected value="">Pilih Durasi</option>
+                                <option value="12 jam">12 Jam</option>
+                                <option value="2 hari">2 Hari</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -129,6 +140,24 @@
                     <div class="col mb-3">
                         <label for="emailWithTitle" class="form-label">Harga/Kg</label>
                         <input type="number" name="harga" class="form-control" value="{{ $row->harga }}">
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="emailBasic" class="form-label">Jenis Satuan</label>
+                            <select id="defaultSelect" class="form-select" name="jenis_satuan">
+                                <option value="satuan" @if($row->jenis_satuan == 'satuan') selected @endif>Satuan</option>
+                                <option value="kiloan" @if($row->jenis_satuan == 'kiloan') selected @endif>Kiloan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="emailBasic" class="form-label">Durasi Layanan</label>
+                            <select id="defaultSelect" class="form-select" name="durasi_layanan">
+                            <option value="12 jam" @if($row->durasi_layanan == '12 jam') selected @endif>12 Jam</option>
+                            <option value="2 hari" @if($row->durasi_layanan == '2 hari') selected @endif>2 Hari</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

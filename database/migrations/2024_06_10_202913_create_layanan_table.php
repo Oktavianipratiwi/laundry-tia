@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('layanan', function (Blueprint $table) {
             $table->id();
             $table->string('jenis_layanan');
-            $table->String('harga'); // Harga dalam bentuk decimal (8 digit, 2 digit di belakang koma)
+            $table->string('harga'); // Harga dalam bentuk decimal (8 digit, 2 digit di belakang koma)
             $table->enum('jenis_satuan', ['satuan', 'kiloan']);
+            $table->enum('durasi_layanan', ['2 hari', '12 jam']);
             $table->timestamps();
         });
     }

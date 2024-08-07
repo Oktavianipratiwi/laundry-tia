@@ -52,19 +52,19 @@
             </div>
             <div class="mb-3">
               <label for="username" class="form-label">Nomor Telepon</label>
-              <input type="number" class="form-control" id="username" name="no_telp" placeholder="083181597441" autofocus required>
+              <input type="tel" class="form-control" id="username" name="no_telp" placeholder="083181597441" autofocus required pattern="[0-9]{10,}" title="Masukkan nomor telepon minimal 10 digit angka">
             </div>
             <div class="mb-3 form-password-toggle">
               <label class="form-label" for="password">Password</label>
               <div class="input-group input-group-merge">
-                <input type="password" required id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <input type="password" required minlength="8" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
             </div>
             <div class="mb-3 form-password-toggle">
               <label class="form-label" for="password">Konfirmasi Password</label>
               <div class="input-group input-group-merge">
-                <input type="password" required id="password" class="form-control" name="password_confirmation" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <input type="password" required minlength="8" id="password" class="form-control" name="password_confirmation" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
             </div>

@@ -67,8 +67,8 @@ $navbarHideToggle = false;
             });
         }
 
-        // Update berat setiap 0.5 detik
-        setInterval(updateWeight, 500);
+        // Update berat setiap 0.1 detik
+        setInterval(updateWeight, 100);
 
         // Update berat segera setelah halaman dimuat
         updateWeight();

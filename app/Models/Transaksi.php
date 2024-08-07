@@ -18,6 +18,7 @@ class Transaksi extends Model
         'pemesanan_id',
         'total_berat',
         'jumlah',
+        'helai_pakaian',
         'diskon',
         'tgl_ditimbang',
         'tgl_diambil',
@@ -34,7 +35,7 @@ class Transaksi extends Model
 
     public function layanan()
     {
-        return $this->belongsTo(Layanan::class);
+        return $this->belongsTo(Layanan::class, 'layanan_id');
     }
 
     public function pemesanan()

@@ -14,6 +14,11 @@ class Pemesanan extends Model
     protected $fillable = [
         'id_user',
         'tgl_pemesanan',
+        'tgl_penjemputan',
+        'jam_jemput',
+        'jam_antar',
+        'tgl_pengantaran',
+        'tgl_pemesanan',
         'alamat',
         'status_pemesanan',
     ];

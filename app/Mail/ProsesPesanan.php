@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\Layanan;
+use App\Models\Pemesanan;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,6 +14,9 @@ use Illuminate\Queue\SerializesModels;
 class ProsesPesanan extends Mailable
 {
     use Queueable, SerializesModels;
+    public $transaksi;
+    public $pemesanan;
+    public $layanan;
     public $name;
     public $total_berat;
     public $jumlah;
@@ -21,8 +26,11 @@ class ProsesPesanan extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($name, $total_berat, $jumlah, $total_bayar, $status_pembayaran)
+    public function __construct($transaksi, $name, $total_berat, $jumlah, $total_bayar, $status_pembayaran)
     {
+        $this->transaksi = $transaksi;
+        $this->pemesanan = Pemesanan::findOrFail($transaksi->pemesanan_id);
+        $this->layanan = Layanan::findOrFail($transaksi->layanan_id);
         $this->name = $name;
         $this->total_berat = $total_berat;
         $this->jumlah = $jumlah;
@@ -48,6 +56,9 @@ class ProsesPesanan extends Mailable
         return new Content(
             view: 'mail.prosespesanan',
             with: [
+                'transaksi' => $this->transaksi,
+                'pemesanan' => $this->pemesanan,
+                'layanan' => $this->layanan,
                 'name' => $this->name,
                 'total_berat' => $this->total_berat,
                 'jumlah' => $this->jumlah,

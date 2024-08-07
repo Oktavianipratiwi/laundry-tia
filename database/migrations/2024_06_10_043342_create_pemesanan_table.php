@@ -16,6 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('tgl_pemesanan');
+            $table->dateTime('tgl_pemjemputan');
+            $table->dateTime('tgl_pengantaran');
+            $table->time('jam_jemput');
+            $table->time('jam_antar');
             $table->string('alamat');
             $table->string('no_telp');
             $table->enum('status_pemesanan', ['sudah diproses', 'belum diproses', 'pegawai menuju lokasi', 'sudah diperiksa', 'antar pesanan'])->default('belum diproses');

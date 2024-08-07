@@ -24,7 +24,7 @@ class ProfileController extends Controller
 
         $profile->name = $request->name;
         $profile->alamat = $request->alamat;
-        $profile->email = $request->email;
+        // $profile->email = $request->email;
         $profile->no_telp = $request->no_telp;
 
         if ($request->filled('password')) {

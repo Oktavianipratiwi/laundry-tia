@@ -111,7 +111,7 @@ class AuthController extends Controller
                 'alamat' => $request->input('alamat'),
                 'no_telp' => $request->input('no_telp'),
                 'email' => $request->input('email'),
-                'password' => bcrypt($request->input('password')),
+                'password' => $request->input('password'),
                 'role' => 'pelanggan',
             ]);
 

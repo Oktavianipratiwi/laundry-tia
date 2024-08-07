@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionsController extends Controller
 {
+    // transaction index
     public function index()
     {
         $user = Auth::user();
@@ -26,7 +27,28 @@ class TransactionsController extends Controller
 
         return view('transactions.transactions-index', compact('transaksiDaftar'));
     }
+    // end
+    // transaction-detail
+    public function detailtransaksi($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+        $user = Auth::user();
 
+        if ($user->role === 'admin') {
+            // Jika pengguna adalah admin, tidak perlu verifikasi ID dan langsung tampilkan detail transaksi
+            $pemesanan = $transaksi->pemesanan;
+            return view('transactions.transactions-detail', compact('transaksi', 'pemesanan','user'));
+        }
+
+        if ($user->id !== $transaksi->user_id) {
+            // Jika tidak, redirect ke halaman yang sesuai (misalnya halaman utama atau halaman akses ditolak)
+            return redirect()->route('transactions-index')->with('error', 'Akses ditolak.');
+        }
+
+        $pemesanan = $transaksi->pemesanan;
+        return view('transactions.transactions-detail', compact('transaksi', 'pemesanan','user'));
+    }
+    // end
     public function konfirmasitransaksi($id)
     {
         $transaksi = Transaksi::find($id);
@@ -34,18 +56,6 @@ class TransactionsController extends Controller
         $transaksi->status_pembayaran = 'lunas';
 
         $transaksi->save();
-
-        // $transaksi = Transaksi::with('pemesanan')->find($id);
-
-        // if ($transaksi && $transaksi->pemesanan) {
-        //     $transaksi->pemesanan->status_pemesanan = 'sudah diperiksa';
-        //     $transaksi->pemesanan->save();
-
-        //     $transaksi->status_pembayaran = 'lunas';
-        //     $transaksi->save();
-
-        //     return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dikonfirmasi.');
-        // }
 
         return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dikonfirmasi.');
     }
@@ -57,13 +67,6 @@ class TransactionsController extends Controller
         $transaksi->delete();
 
         return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dihapus.');
-    }
-
-    public function detailtransaksi($id)
-    {
-        $transaksi = Transaksi::findOrFail($id);
-        $pemesanan = $transaksi->pemesanan;
-        return view('transactions.transactions-detail', compact('transaksi', 'pemesanan'));
     }
 
     public function bayartransaksi(Request $request, $id)

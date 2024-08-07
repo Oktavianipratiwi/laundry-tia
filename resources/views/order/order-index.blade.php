@@ -41,9 +41,13 @@
                 <tr>
                     <th>No</th>
                     <th>Nama Pelanggan</th>
-                    <th>Tanggal Pemesanan</th>
+                    <!-- <th>Tanggal Pemesanan</th>
+                    <th>Tanggal Penjemputan</th>
+                    <th>Tanggal Pengantaran</th> -->
+                    <th>Tanggal dan Jam Jemput</th>
+                    <th>Tanggal dan Jam Antar</th>
                     <th>Alamat</th>
-                    <th>Kontak</th>
+                    <!-- <th>Kontak</th> -->
                     <th>Status</th>
                     <th class="text-center" colspan="2">Actions</th>
                 </tr>
@@ -58,9 +62,35 @@
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $row->user->name }}</td>
-                    <td>{{ \Carbon\Carbon::parse($row->tgl_pemesanan)->translatedFormat('l, j F Y') }}</td>
+                    <!-- <td>{{ \Carbon\Carbon::parse($row->tgl_pemesanan)->translatedFormat('l, j F Y') }}</td> -->
+                    <!-- @if($row->tgl_penjemputan)
+                    <td>
+                        {{ \Carbon\Carbon::parse($row->tgl_penjemputan)->translatedFormat('l, j F Y') }}
+                        </td>
+                    @else
+                    <td><b>
+                        Belum ditentukan
+                        </b></td>
+                    @endif
+                    @if($row->tgl_pengantaran)
+                    <td>
+                        {{ \Carbon\Carbon::parse($row->tgl_penjemputan)->translatedFormat('l, j F Y') }}
+                        </td>
+                    @else
+                        <td><b>Belum ditentukan</b></td>
+                    @endif -->
+                    @if($row->tgl_penjemputan == null)
+                    <td><b>Belum diatur</b></td>
+                    @else
+                    <td>{{ \Carbon\Carbon::parse($row->tgl_penjemputan)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($row->jam_jemput)->format('H:i') }} WIB</td>
+                    @endif
+                    @if($row->tgl_pengantaran == null)
+                    <td><b>Belum diatur</b></td>
+                    @else
+                    <td>{{ \Carbon\Carbon::parse($row->tgl_pengantaran)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($row->jam_antar)->format('H:i') }} WIB</td>
+                    @endif
                     <td>{{ $row->alamat }}</td>
-                    <td>{{ $row->no_telp }}</td>
+                    <!-- <td>{{ $row->no_telp }}</td> -->
                     <td>
                         @if($row->status_pemesanan == 'sudah diproses')
                         <span class="badge bg-label-success me-1">Sudah diproses</span>
@@ -71,7 +101,7 @@
                         @elseif($row->status_pemesanan == 'antar pesanan')
                         <span class="badge bg-label-info me-1">kurir antar pesanan</span>
                         @elseif($row->status_pemesanan == 'sudah diperiksa')
-                        <span class="badge bg-label-primary me-1">Sudah diperiksa</span>
+                        <span class="badge bg-label-primary me-1">Pesanan selesai</span>
                         @endif
                     </td>
                     @if(auth()->user()->role == 'pegawai')
@@ -111,6 +141,9 @@
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiWhatsApp{{ $row->id }}">
+                                    <i class="bx bxl-whatsapp me-1"></i> Konfirmasi via WhatsApp
+                                </a>
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditPesanan{{ $row->id }}"><i class="bx bx-edit-alt me-1"></i> Edit</a>
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusPesanan{{ $row->id }}"><i class="bx bx-trash me-1"></i> Delete</a>
                             </div>
@@ -129,6 +162,9 @@
                 <tr>
                     <th>No</th>
                     <th>Tanggal Pemesanan</th>
+                    <!-- <th>Tanggal Penjemputan</th> -->
+                    <!-- <th>Jam Jemput</th>
+                    <th>Tanggal Pengantaran</th> -->
                     <th>Alamat</th>
                     <th>No Telp</th>
                     <th>Status Pemesanan</th>
@@ -154,7 +190,7 @@
                         @elseif($row->status_pemesanan == 'antar pesanan')
                         <span class="badge bg-label-info me-1">kurir antar pesanan</span>
                         @elseif($row->status_pemesanan == 'sudah diperiksa')
-                        <span class="badge bg-label-primary me-1">Sudah diperiksa</span>
+                        <span class="badge bg-label-primary me-1">Pesanan Selesai</span>
                         @endif
                     </td>
                 </tr>
@@ -179,19 +215,31 @@
                 <div class="modal-body">
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="dobBasic" class="form-label">Tanggal Pemesanan</label>
-                            <input type="date" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                            <label for="dobBasic" class="form-label"><b>Tanggal Pemesanan</b></label>
+                            <input type="date" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" readonly>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="emailBasic" class="form-label">Alamat</label>
+                            <label for="dobBasic" class="form-label"><b>Tanggal Dijemput Kurir</b></label>
+                            <input type="date" name="tgl_penjemputan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="dobBasic" class="form-label"><b>Jam Jemput Kurir</b></label>
+                            <input type="time" name="jam_jemput" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-3">
+                            <label for="emailBasic" class="form-label"><b>Alamat</b></label>
                             <textarea class="form-control" name="alamat" placeholder="Masukkan Alamat Lengkap">{{ auth()->user()->alamat }}</textarea>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="dobBasic" class="form-label">Kontak</label>
+                            <label for="dobBasic" class="form-label"><b>Kontak</b></label>
                             <input type="number" name="no_telp" class="form-control" placeholder="Silahkan masukkan Nomor Hp" value="{{ auth()->user()->no_telp }}">
                         </div>
                     </div>
@@ -340,7 +388,13 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Total Berat (dalam Kg)</b></label>
-                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}" readonly>
+                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}">
+                        </div>
+                    </div>
+                    <div class=" row g-2">
+                        <div class="col mb-1">
+                            <label for="dobBasic" class="form-label"><b>Jumlah Helai Pakaian (dalam PCS)</b></label>
+                            <input type="number" name="helai_pakaian" class="form-control" value="0">
                         </div>
                     </div>
                     <div class=" row g-2">
@@ -377,7 +431,7 @@
     <div class="modal-dialog modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Edit Pesanan No {{ $key+1 }}</h5>
+                <h5 class="modal-title" id="modalCenterTitle">Edit Pesanan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('editpesanan',$row->id) }}" method="POST">
@@ -385,8 +439,42 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="nameWithTitle" class="form-label">Tanggal Pemesanan</label>
-                            <input type="date" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::parse($row->tgl_pemesanan)->format('Y-m-d') }}">
+                            <label for="nameWithTitle" class="form-label"><b>Tanggal Penjemputan</b></label>
+                            @if($row->tgl_penjemputan == null)
+                            <input type="text" class="form-control" value="Maaf, tanggal penjemputan belum ditentukan." readonly>
+                            @else
+                            <input type="date" name="tgl_penjemputan" class="form-control" value="{{ \Carbon\Carbon::parse($row->tgl_penjemputan)->format('Y-m-d') }}">
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="nameWithTitle" class="form-label"><b>Jam Jemput</b></label>
+                            @if($row->jam_jemput == '00:00:00')
+                            <input type="text" class="form-control" value="Maaf, jam jemput belum ditentukan." readonly>
+                            @else
+                            <input type="time" name="jam_jemput" class="form-control" value="{{ \Carbon\Carbon::parse($row->jam_jemput)->format('H:i') }}">
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="nameWithTitle" class="form-label"><b>Tanggal Pengantaran</b></label>
+                            @if($row->tgl_pengantaran == null)
+                            <input type="text" class="form-control" value="Maaf, tanggal pengantaran belum ditentukan." readonly>
+                            @else
+                            <input type="date" name="tgl_pengantaran" class="form-control" value="{{ \Carbon\Carbon::parse($row->tgl_pengantaran)->format('Y-m-d') }}">
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="nameWithTitle" class="form-label"><b>Jam Antar</b></label>
+                            @if($row->jam_antar == '00:00:00')
+                            <input type="text" class="form-control" value="Maaf, jam antar belum ditentukan." readonly>
+                            @else
+                            <input type="time" name="jam_antar" class="form-control" value="{{ \Carbon\Carbon::parse($row->jam_antar)->format('H:i') }}">
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -426,5 +514,27 @@
 </div>
 @endforeach
 
+@foreach($pesananDaftar as $row)
+<div class="modal fade" id="modalKonfirmasiWhatsApp{{ $row->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Konfirmasi via WhatsApp</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin mengirim pesan konfirmasi ke pelanggan via WhatsApp?</p>
+            </div>
+            <form action="{{ route('konfirmasiwhatsapp',$row->id) }}" target="_blank" method="POST">
+                @csrf
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-success">Ya, Konfirmasi</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 
 @endsection

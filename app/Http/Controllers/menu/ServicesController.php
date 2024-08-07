@@ -21,6 +21,7 @@ class ServicesController extends Controller
             'jenis_layanan' => $request->input('jenis_layanan'),
             'harga' => $request->input('harga'),
             'jenis_satuan' => $request->input('jenis_satuan'),
+            'durasi_layanan' => $request->input('durasi_layanan'),
             'created_at' => now(),
             'updated_at' => now()
         ]);

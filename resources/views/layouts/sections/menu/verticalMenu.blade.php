@@ -42,6 +42,7 @@
     $showMenu = false;
     }
     }
+    
 
     $activeClass = null;
     $currentRouteName = Route::currentRouteName();

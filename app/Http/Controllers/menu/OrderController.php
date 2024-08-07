@@ -11,6 +11,7 @@ use App\Models\Pemesanan;
 use App\Models\Transaksi;
 use App\Models\User;
 use App\Models\Weight;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,8 @@ class OrderController extends Controller
         $pemesanan->id_user = Auth::user()->id;
         $pemesanan->tgl_pemesanan = $request->tgl_pemesanan;
         $pemesanan->alamat = $request->alamat;
+        $pemesanan->tgl_penjemputan = $request->tgl_penjemputan;
+        $pemesanan->jam_jemput = $request->jam_jemput;
         $pemesanan->no_telp = $request->no_telp;
         $pemesanan->status_pemesanan = 'belum diproses';
         $pemesanan->save();
@@ -64,6 +67,27 @@ class OrderController extends Controller
         return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
     }
 
+    
+    // UNTUK KURIR
+    public function konfirmasiwhatsapp($id)
+    {
+    $pesanan = Pemesanan::findOrFail($id);
+    $user = User::findOrFail($pesanan->id_user);
+    $kurir = auth()->user();
+
+    // Format nomor telepon
+    $phoneNumber = preg_replace('/^0/', '62', $user->no_telp);
+    // Hapus karakter non-digit
+    $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+    
+    $whatsappMessage = urlencode("Halo {$user->name}, saya {$kurir->name} dari layanan antar jemput Tia Laundry. Apakah Anda ada di rumah dan siap untuk penjemputan/pengantaran pesanan? Mohon konfirmasi ketersediaan Anda. Terima kasih!");
+    $whatsappLink = "https://api.whatsapp.com/send?phone={$phoneNumber}&text=" . ($whatsappMessage);
+    
+    session()->flash('success', 'Pesanan untuk konfirmasi ke WA pelanggan berhasil dikirim.');
+
+    return redirect()->away($whatsappLink);
+    }
+
     // UNTUK KURIR
     public function konfirmasipesananjemput($id)
     {
@@ -75,6 +99,7 @@ class OrderController extends Controller
         Mail::to($user->email)->send(new JemputPesanan($user->name, $kurir->name, $kurir->no_telp));
 
         $pesanan->status_pemesanan = 'pegawai menuju lokasi';
+        $pesanan->jam_jemput = Carbon::now()->format('H:i:s');
         $pesanan->save();
 
 
@@ -92,6 +117,7 @@ class OrderController extends Controller
         Mail::to($user->email)->send(new AntarPesanan($user->name, $kurir->name, $kurir->no_telp));
 
         $pesanan->status_pemesanan = 'antar pesanan';
+        $pesanan->jam_antar = Carbon::now()->format('H:i:s');
         $pesanan->save();
 
         return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
@@ -136,6 +162,7 @@ class OrderController extends Controller
             'tgl_ditimbang' => $request->input('tgl_ditimbang'),
             'total_berat' => $total_berat,
             'jumlah' => null,
+            'helai_pakaian' => $request->input('helai_pakaian'),
             'diskon' => $diskon,
             'status_pembayaran' => $request->input('status_pembayaran'),
             'total_bayar' => $total_bayar_setelah_diskon,
@@ -143,13 +170,39 @@ class OrderController extends Controller
             'updated_at' => now()
         ]);
 
+        // Update tgl_penjemputan dan tgl_pengantaran
+        $tgl_penjemputan = Carbon::parse($pesanan->tgl_penjemputan);
+        $jam_jemput = Carbon::parse($pesanan->jam_jemput); // Mengambil jam jemput dari tabel pemesanan
+        $tgl_pengantaran = $tgl_penjemputan;
+        $jam_antar = $jam_jemput;
+
+        // Cek jenis layanan dan tambahkan waktu sesuai
+        if ($layanan->jenis_satuan == 'kiloan' && $layanan->durasi_layanan == '2 hari') {
+            $tgl_pengantaran = $tgl_pengantaran->addDays(2);
+            $jam_antar = $jam_jemput; 
+        }elseif ($layanan->jenis_satuan == 'kiloan' && $layanan->durasi_layanan == '12 jam') {
+            $jam_antar = $jam_antar->addHours(12);
+
+            if ($jam_antar->hour >= 24) {
+                $tgl_pengantaran = $tgl_pengantaran->addDay();
+                $jam_antar = $jam_antar->subHours(24); // Reset jam_antar ke format 24 jam
+            }
+        }
+
+        $tgl_pengantaran = $tgl_pengantaran->format('Y-m-d');
+        $jam_antar = $jam_antar->format('H:i:s');
+
+        $pesanan->update([
+            'tgl_pengantaran' => $tgl_pengantaran,
+            'jam_antar' => $jam_antar,
+            'status_pemesanan' => 'sudah diproses'
+        ]);        
+        $pesanan->save();
+
         $user = User::findOrFail($pesanan->id_user);
         $transaksi = Transaksi::latest()->first();
 
-        Mail::to($user->email)->send(new ProsesPesanan($user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
-
-        $pesanan->status_pemesanan = 'sudah diproses';
-        $pesanan->save();
+        Mail::to($user->email)->send(new ProsesPesanan($transaksi, $user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
         return redirect()->route('order-index')->with('success', 'Transaksi berhasil.');
     }
@@ -175,6 +228,7 @@ class OrderController extends Controller
             'tgl_ditimbang' => $request->input('tgl_ditimbang'),
             'jumlah' => $jumlah,
             'total_berat' => null,
+            'helai_pakaian' => null,
             'diskon' => $diskon,
             'status_pembayaran' => $request->input('status_pembayaran'),
             'total_bayar' => $total_bayar_setelah_diskon,
@@ -182,10 +236,36 @@ class OrderController extends Controller
             'updated_at' => now()
         ]);
 
+        // Update tgl_penjemputan dan tgl_pengantaran
+        $tgl_penjemputan = Carbon::parse($pesanan->tgl_penjemputan);
+        $jam_jemput = Carbon::parse($pesanan->jam_jemput); // Mengambil jam jemput dari tabel pemesanan
+        $tgl_pengantaran = $tgl_penjemputan;
+        $jam_antar = $jam_jemput;
+
+        // Cek jenis layanan dan tambahkan waktu sesuai
+        if ($layanan->jenis_satuan == 'satuan' && $layanan->durasi_layanan == '2 hari') {
+            $tgl_pengantaran = $tgl_pengantaran->addDays(2);
+            $jam_antar = $jam_jemput; 
+        }elseif ($layanan->jenis_satuan == 'satuan' && $layanan->durasi_layanan == '12 jam') {
+            $jam_antar = $jam_antar->addHours(12);
+
+            if ($jam_antar->hour >= 24) {
+                $tgl_pengantaran = $tgl_pengantaran->addDay();
+                $jam_antar = $jam_antar->subHours(24); // Reset jam_antar ke format 24 jam
+            }
+        }
+
+        $pesanan->update([
+            'tgl_pengantaran' => $tgl_pengantaran,
+            'jam_antar' => $jam_antar,
+            'status_pemesanan' => 'sudah diproses'
+        ]);        
+        $pesanan->save();
+
         $user = User::findOrFail($pesanan->id_user);
         $transaksi = Transaksi::latest()->first();
 
-        Mail::to($user->email)->send(new ProsesPesanan($user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
+        Mail::to($user->email)->send(new ProsesPesanan($transaksi, $user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
 
         $pesanan->status_pemesanan = 'sudah diproses';
@@ -193,7 +273,6 @@ class OrderController extends Controller
 
         return redirect()->route('order-index')->with('success', 'Transaksi berhasil.');
     }
-
 
     public function editpesanan(Request $request, $id)
     {

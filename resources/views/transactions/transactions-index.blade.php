@@ -9,6 +9,11 @@
     {{ session('success') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+@elseif(session('error'))
+<div class="alert alert-danger alert-dismissible" role="alert">
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 
 <div class="card">
@@ -65,13 +70,9 @@
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
-                                @if($row->status_pembayaran == 'lunas')
                                 <a class="dropdown-item" href="{{ route('detailtransaksi', $row->id) }}"><i class=" bx bx-detail me-1"></i> Detail</a>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusTransaksi{{ $row->id }}"><i class=" bx bx-trash me-1"></i> Delete</a>
-                                @else
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiTransaksi{{ $row->id }}"><i class=" bx bx-check me-1"></i> Konfirmasi</a>
                                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusTransaksi{{ $row->id }}"><i class=" bx bx-trash me-1"></i> Delete</a>
-                                @endif
                             </div>
                         </div>
                     </td>
@@ -134,13 +135,9 @@
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                 <div class="dropdown-menu">
-                                    @if($row->status_pembayaran == 'lunas')
                                     <a class="dropdown-item" href="{{ route('detailtransaksi', $row->id) }}"><i class=" bx bx-detail me-1"></i> Detail</a>
-                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusTransaksi{{ $row->id }}"><i class=" bx bx-trash me-1"></i> Delete</a>
-                                    @else
                                     <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiTransaksi{{ $row->id }}"><i class=" bx bx-check me-1"></i> Konfirmasi</a>
                                     <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusTransaksi{{ $row->id }}"><i class=" bx bx-trash me-1"></i> Delete</a>
-                                    @endif
                                 </div>
                             </div>
                         </td>
@@ -159,6 +156,8 @@
                     <thead>
                         <tr>
                             <th>Tanggal Ditimbang</th>
+                            <th>Tanggal dan Jam Jemput</th>
+                            <th>Tanggal dan Jam Antar</th>
                             <th>Total Bayar</th>
                             <th>Status Pembayaran</th>
                             <th>Actions</th>
@@ -173,6 +172,8 @@
                         @foreach($transaksiDaftar as $key => $row)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($row->tgl_ditimbang)->translatedFormat('j F Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($row->tgl_penjemputan)->translatedFormat('j F Y') }} - {{ \Carbon\Carbon::parse($row->jam_jemput)->translatedFormat('H:i') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($row->tgl_pengantaran)->translatedFormat('j F Y') }} - {{ \Carbon\Carbon::parse($row->jam_antar)->translatedFormat('H:i') }}</td>
                             <td>Rp{{ number_format($row->total_bayar, 0, ',', '.') }}</td>
                             @if($row->status_pembayaran == 'lunas')
                             <td><span class="badge bg-label-success me-1">Lunas</span></td>
@@ -204,7 +205,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda yakin untuk konfirmasi transaksi atas nama <b>{{ $row->user->name }} pada nomor {{ $key+1 }}</b> ?
+                        Apakah Anda yakin untuk konfirmasi transaksi atas nama <b>{{ $row->user->name }}</b> ?
                     </div>
                     <form action="{{ route('konfirmasitransaksi',$row->id) }}" method="POST">
                         @csrf
@@ -230,7 +231,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda yakin untuk menghapus transaksi atas nama <b>{{ $row->user->name }} pada nomor {{ $key+1 }}</b> ?
+                        Apakah Anda yakin untuk menghapus transaksi atas nama <b>{{ $row->user->name }}</b> ?
                     </div>
                     <form action="{{ route('hapustransaksi',$row->id) }}" method="POST">
                         @csrf

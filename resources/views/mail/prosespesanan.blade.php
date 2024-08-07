@@ -57,17 +57,24 @@
         <div class="details">
             <p>Pelanggan Yth:</p>
             <p><strong>{{ $name }}</strong></p>
-            <p>Terima: 24/07/2024 17:24</p>
-            <p>Selesai: 26/07/2024 17:24</p>
+            <p>Tgl Jemput: {{ \Carbon\Carbon::parse($pemesanan->tgl_penjemputan)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($pemesanan->jam_jemput)->format('H:i') }} WIB</p>
+            <p>Tgl Antar: {{ \Carbon\Carbon::parse($pemesanan->tgl_pengantaran)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($pemesanan->jam_antar)->format('H:i') }} WIB</p>
         </div>
 
         <div class="order-details">
             <p><strong>Detail pesanan:</strong></p>
             <p>Layanan:</p>
+            @if($total_berat != null)
             <ul>
-                <li>✅ Cuci strika 2 hari, {{ $total_berat }} Kg</li>
-                <li>{{ $jumlah }} Pcs</li>
+                <li>✅ {{ $layanan->jenis_layanan }}, {{ $total_berat }} Kg, kiloan</li>
+                <li>✅ {{ $transaksi->helai_pakaian }} Pcs Helai </li>
             </ul>
+            @elseif($jumlah != null)
+            <ul>
+                <li>✅ {{ $layanan->jenis_layanan }}, satuan </li>
+                <li>✅ {{ $jumlah }} Pcs</li>
+            </ul>
+            @endif
         </div>
 
         <div class="cost-details">
