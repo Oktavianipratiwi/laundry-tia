@@ -15,11 +15,12 @@ class CreateTransaksiTable extends Migration
             $table->unsignedBigInteger('pemesanan_id');
             $table->float('total_berat')->nullable();
             $table->integer('jumlah')->nullable();
-            $table->integer('helai_pakaian')->nullable;
+            $table->integer('helai_pakaian')->nullable();
             $table->integer('diskon')->default(0);
             $table->dateTime('tgl_ditimbang');
             $table->float('total_bayar');
             $table->enum('status_pembayaran', ['belum lunas', 'lunas'])->default('belum lunas');
+            $table->dateTime('tanggal_pembayaran')->nullable();
             $table->enum('status_pengantaran', ['belum diantar', 'sudah diantar'])->default('belum diantar');
             $table->string('bukti_pembayaran')->nullable();
             $table->timestamps();

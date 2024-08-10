@@ -7,6 +7,7 @@ use App\Http\Controllers\menu\BeratLiveController;
 use App\Http\Controllers\menu\OrderController;
 use App\Http\Controllers\menu\CourierController;
 use App\Http\Controllers\menu\CustomersController;
+use App\Http\Controllers\menu\LaporanController;
 use App\Http\Controllers\menu\ProfileController;
 use App\Http\Controllers\menu\ServicesController;
 use App\Http\Controllers\menu\TransactionsController;
@@ -69,6 +70,11 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
     // transactions/transaksi
     Route::post('/konfirmasitransaksi/{id}', [TransactionsController::class, 'konfirmasitransaksi'])->name('konfirmasitransaksi');
     Route::delete('/hapustransaksi/{id}', [TransactionsController::class, 'hapustransaksi'])->name('hapustransaksi');
+
+    // laporan
+    Route::get('/laporan',[LaporanController::class,'index'])->name('laporan-index');
+    Route::get('/laporan/detail/{tanggal}', [LaporanController::class, 'detail'])->name('laporan-detail');
+
 });
 
 // RUTE UTK PEGAWAI SAJA

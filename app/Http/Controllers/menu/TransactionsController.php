@@ -4,6 +4,7 @@ namespace App\Http\Controllers\menu;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,7 +55,7 @@ class TransactionsController extends Controller
         $transaksi = Transaksi::find($id);
 
         $transaksi->status_pembayaran = 'lunas';
-
+        $transaksi->tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
         $transaksi->save();
 
         return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dikonfirmasi.');
@@ -84,6 +85,7 @@ class TransactionsController extends Controller
 
 
         $transaksi->status_pembayaran = 'lunas';
+        $transaksi->tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
         $transaksi->save();
 
         return redirect()->route('transactions-index')->with('success', 'Transaksi berhasil.');

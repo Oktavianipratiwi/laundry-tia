@@ -38,7 +38,12 @@
       "icon": "menu-icon tf-icons bx bxs-user-detail",
       "name": "Pelanggan",
       "slug": "customers-index"
+    },
+    {
+      "url": "laporan",
+      "icon": "menu-icon tf-icons bx bxs-report",
+      "name": "Laporan",
+      "slug": "laporan-index"
     }
-
   ]
 }

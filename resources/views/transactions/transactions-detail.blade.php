@@ -1,7 +1,3 @@
-@php
-$isNavbar = false;
-@endphp
-
 @extends('layouts/contentNavbarLayout')
 
 @section('title', 'Detail Transaksi')
@@ -124,6 +120,7 @@ $isNavbar = false;
                 <div class="mt-3 text-center">
                     <p><strong>Bukti Pembayaran:</strong></p>
                     <img src="{{ asset($transaksi->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="img-fluid" style="width: 50%; height: 50%;">
+                    <h5 class="mt-3">Tanggal Pelunasan : {{ \Carbon\Carbon::parse($transaksi->tanggal_pembayaran)->translatedFormat('l, j F Y') }}</h5>
                 </div>
                 @endif
                 @endif

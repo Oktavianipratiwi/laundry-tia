@@ -11,6 +11,23 @@
 </div>
 @endif
 
+@if(session('infokiloan'))
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Rekap Terbaru</h4>
+    <p>Layanan: {{ session('infokiloan')['layanan'] }}</p>
+    <p>Total Berat: {{ session('infokiloan')['total_berat'] }} kg</p>
+    <p>Harga: Rp{{ number_format(session('infokiloan')['harga'], 0, ',', '.') }}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@elseif(session('infosatuan'))
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Rekap Terbaru</h4>
+    <p>Layanan: {{ session('infosatuan')['layanan'] }}</p>
+    <p>Jumlah: {{ session('infosatuan')['jumlah'] }} Pcs</p>
+    <p>Harga: Rp{{ number_format(session('infosatuan')['harga'], 0, ',', '.') }}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
 <div class="card">
     @if(auth()->user()->role == 'pegawai')
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -388,7 +405,7 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Total Berat (dalam Kg)</b></label>
-                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}">
+                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }} ">
                         </div>
                     </div>
                     <div class=" row g-2">

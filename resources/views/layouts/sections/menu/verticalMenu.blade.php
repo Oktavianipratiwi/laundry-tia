@@ -38,10 +38,16 @@
     }
     }
     if ($userRole === 'pegawai') {
-    if (in_array($menu->slug, ['transactions-index'])) {
+    if (in_array($menu->slug, ['transactions-index','laporan-index'])) {
     $showMenu = false;
     }
     }
+    if ($userRole === 'pelanggan') {
+    if (in_array($menu->slug, ['laporan-index'])) {
+    $showMenu = false;
+    }
+    }
+    
     
 
     $activeClass = null;

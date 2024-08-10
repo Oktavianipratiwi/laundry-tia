@@ -27,7 +27,7 @@ $navbarHideToggle = false;
             <div class="mb-4 mt-4">
                 <h2 class="text-center mb-3">Pemantauan Berat Secara Langsung</h2>
                 <div class="text-center">
-                    <h1 class="display-1 fw-bold" id="beratLangsung">{{ $berat->weight }} Kg</h1>
+                    <h1 class="display-1 fw-bold" id="beratLangsung">{{ $berat && $berat->weight !== null ? $berat->weight : '0' }} Kg</h1>
                 </div>
             </div>
 
@@ -58,11 +58,12 @@ $navbarHideToggle = false;
                     if (data.weight !== null) {
                         $('#beratLangsung').text(data.weight + ' Kg');
                     } else {
-                        $('#beratLangsung').text('N/A');
+                        $('#beratLangsung').text('0 Kg');                    
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching weight: " + error);
+                    $('#beratLangsung').text('0 Kg');
                 }
             });
         }

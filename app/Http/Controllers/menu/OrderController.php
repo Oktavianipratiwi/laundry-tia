@@ -52,18 +52,6 @@ class OrderController extends Controller
         $pemesanan->status_pemesanan = 'belum diproses';
         $pemesanan->save();
 
-        // $pemesanan = Pemesanan::find($request->pemesanan_id);
-        // $pemesanan->status_pemesanan = 'sudah diproses';
-        // $pemesanan->save();
-
-        // if (Auth::user()->role == 'pegawai') {
-        //     return redirect()->route('order-index')->with('success', 'Transaksi berhasil ditambahkan.');
-        // } elseif (Auth::user()->role == 'admin') {
-        //     return redirect()->route('order-index')->with('success', 'Transaksi berhasil ditambahkan.');
-        // } else {
-        //     return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
-        // }
-
         return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
     }
 
@@ -155,6 +143,13 @@ class OrderController extends Controller
         $diskon = $request->input('diskon', 0);
         $total_bayar_setelah_diskon = $total_bayar - $diskon;
 
+        $status_pembayaran = $request->input('status_pembayaran');
+        $tanggal_pembayaran = null;
+
+        if ($status_pembayaran === 'lunas') {
+            $tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
+        }
+
         Transaksi::create([
             'user_id' => $request->input('user_id'),
             'layanan_id' => $request->input('layanan_id'),
@@ -164,7 +159,8 @@ class OrderController extends Controller
             'jumlah' => null,
             'helai_pakaian' => $request->input('helai_pakaian'),
             'diskon' => $diskon,
-            'status_pembayaran' => $request->input('status_pembayaran'),
+            'status_pembayaran' => $status_pembayaran,
+            'tanggal_pembayaran' => $tanggal_pembayaran,            
             'total_bayar' => $total_bayar_setelah_diskon,
             'created_at' => now(),
             'updated_at' => now()
@@ -204,7 +200,13 @@ class OrderController extends Controller
 
         Mail::to($user->email)->send(new ProsesPesanan($transaksi, $user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
-        return redirect()->route('order-index')->with('success', 'Transaksi berhasil.');
+        return redirect()->route('order-index')
+        ->with('success', 'Transaksi berhasil.')
+        ->with('infokiloan', [
+            'layanan' => $layanan->jenis_layanan, // Ganti 'nama_layanan' sesuai dengan kolom yang ada
+            'total_berat' => $total_berat,
+            'harga' => $total_bayar_setelah_diskon
+        ]);;
     }
 
     // UTK KURIR
@@ -221,6 +223,13 @@ class OrderController extends Controller
         $diskon = $request->input('diskon', 0);
         $total_bayar_setelah_diskon = $total_bayar - $diskon;
 
+        $status_pembayaran = $request->input('status_pembayaran');
+        $tanggal_pembayaran = null;
+
+        if ($status_pembayaran === 'lunas') {
+            $tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
+        }
+
         Transaksi::create([
             'user_id' => $request->input('user_id'),
             'layanan_id' => $request->input('layanan_id'),
@@ -230,7 +239,8 @@ class OrderController extends Controller
             'total_berat' => null,
             'helai_pakaian' => null,
             'diskon' => $diskon,
-            'status_pembayaran' => $request->input('status_pembayaran'),
+            'status_pembayaran' => $status_pembayaran,
+            'tanggal_pembayaran' => $tanggal_pembayaran, 
             'total_bayar' => $total_bayar_setelah_diskon,
             'created_at' => now(),
             'updated_at' => now()
@@ -271,7 +281,12 @@ class OrderController extends Controller
         $pesanan->status_pemesanan = 'sudah diproses';
         $pesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Transaksi berhasil.');
+        return redirect()->route('order-index')->with('success', 'Transaksi berhasil.')
+        ->with('infosatuan', [
+            'layanan' => $layanan->jenis_layanan, // Ganti 'nama_layanan' sesuai dengan kolom yang ada
+            'jumlah' => $jumlah,
+            'harga' => $total_bayar_setelah_diskon
+        ]);
     }
 
     public function editpesanan(Request $request, $id)
