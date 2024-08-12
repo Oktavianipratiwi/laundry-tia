@@ -405,7 +405,7 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Total Berat (dalam Kg)</b></label>
-                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }} ">
+                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}" readonly>
                         </div>
                     </div>
                     <div class=" row g-2">
