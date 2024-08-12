@@ -10,7 +10,7 @@
 <body>
     <p>Ini adalah email OTP Anda:</p>
     <h1>{{ $otp }}</h1>
-    <p>Gunakan kode OTP di atas untuk mereset kata sandi Anda.</p>
+    <p>Gunakan kode OTP di atas untuk login Anda.</p>
 </body>
 
 </html>
