@@ -239,25 +239,25 @@
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label"><b>Tanggal Dijemput Kurir</b></label>
-                            <input type="date" name="tgl_penjemputan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                            <input type="date" name="tgl_penjemputan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label"><b>Jam Jemput Kurir</b></label>
-                            <input type="time" name="jam_jemput" class="form-control">
+                            <input type="time" name="jam_jemput" class="form-control" required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label"><b>Alamat</b></label>
-                            <textarea class="form-control" name="alamat" placeholder="Masukkan Alamat Lengkap">{{ auth()->user()->alamat }}</textarea>
+                            <textarea class="form-control" name="alamat" placeholder="Masukkan Alamat Lengkap" required>{{ auth()->user()->alamat }}</textarea>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label"><b>Kontak</b></label>
-                            <input type="number" name="no_telp" class="form-control" placeholder="Silahkan masukkan Nomor Hp" value="{{ auth()->user()->no_telp }}">
+                            <input type="tel" name="no_telp" class="form-control" placeholder="Silahkan masukkan Nomor Hp" value="{{ auth()->user()->no_telp }}" required pattern="[0-9]{10,}" title="Masukkan nomor telepon minimal 10 digit angka">
                         </div>
                     </div>
                 </div>

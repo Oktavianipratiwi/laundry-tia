@@ -20,7 +20,7 @@ class CustomersController extends Controller
     {
         User::create([
             'name' => $request->input('name'),
-            'password' => Hash::make($request->password),
+            'password' => $request->input('password'),
             'alamat' => $request->input('alamat'),
             'no_telp' => $request->input('no_telp'),
             'email' => $request->input('email'),

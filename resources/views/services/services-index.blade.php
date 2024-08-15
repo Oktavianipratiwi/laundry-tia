@@ -79,20 +79,20 @@
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label">Nama Layanan</label>
-                            <input type="text" name="jenis_layanan" class="form-control" placeholder="Masukkan Nama Layanan">
+                            <input type="text" name="jenis_layanan" class="form-control" placeholder="Masukkan Nama Layanan" required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label">Harga</label>
-                            <input type="number" name="harga" class="form-control" placeholder="Masukkan Harga">
+                            <input type="number" name="harga" class="form-control" placeholder="Masukkan Harga" required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label">Jenis Layanan</label>
-                            <select id="defaultSelect" class="form-select" name="jenis_satuan">
-                                <option disabled selected value="">Pilih Jenis</option>
+                            <select id="defaultSelect" class="form-select" name="jenis_satuan" required>
+                                <option disabled selected value="">Pilih Jenis Satuan</option>
                                 <option value="satuan">Satuan</option>
                                 <option value="kiloan">Kiloan</option>
                             </select>
@@ -101,8 +101,8 @@
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label">Durasi Layanan</label>
-                            <select id="defaultSelect" class="form-select" name="durasi_layanan">
-                                <option disabled selected value="">Pilih Durasi</option>
+                            <select id="defaultSelect" class="form-select" name="durasi_layanan" required>
+                                <option disabled selected value="">Pilih Durasi Layanan</option>
                                 <option value="12 jam">12 Jam</option>
                                 <option value="2 hari">2 Hari</option>
                             </select>

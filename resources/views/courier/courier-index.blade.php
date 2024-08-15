@@ -68,27 +68,27 @@
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="nameBasic" class="form-label">Nama</label>
-                            <input type="text" name="name" class="form-control" placeholder="Masukkan Nama Kurir">
+                            <input type="text" name="name" class="form-control" placeholder="Masukkan nama kurir" required>
                         </div>
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control">
+                            <input type="password" name="password" class="form-control" required placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" minlength="8">
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control">
+                            <input type="email" name="email" class="form-control" required placeholder="Masukkan email kurir.">
                         </div>
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label">Kontak</label>
-                            <input type="number" name="no_telp" class="form-control">
+                            <input type="tel" name="no_telp" class="form-control" required placeholder="Masukkan nomor telepon kurir." pattern="[0-9]{10,}" title="Masukkan nomor telepon minimal 10 digit angka">
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="emailBasic" class="form-label">Alamat</label>
-                            <textarea class="form-control" name="alamat"></textarea>
+                            <textarea class="form-control" name="alamat" required placeholder="Masukkan alamat kurir."></textarea>
                         </div>
                     </div>
                 </div>
