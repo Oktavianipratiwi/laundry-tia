@@ -22,6 +22,7 @@ class CreateTransaksiTable extends Migration
             $table->dateTime('tanggal_pembayaran')->nullable();
             $table->enum('status_pengantaran', ['belum diantar', 'sudah diantar'])->default('belum diantar');
             $table->string('bukti_pembayaran')->nullable();
+            $table->string('foto_pakaian');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

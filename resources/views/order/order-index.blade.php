@@ -29,17 +29,7 @@
 </div>
 @endif
 <div class="card">
-    @if(auth()->user()->role == 'kurir')
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Daftar Pesanan</h5>
-        <form action="{{url('berat-live')}}" method="GET">
-            <button type="submit" class="btn btn-primary">
-                <span class="tf-icons bx bx-check-circle me-1"></span>Timbang!
-            </button>
-        </form>
-    </div>
-
-    @elseif(auth()->user()->role == 'admin')
+    @if(auth()->user()->role == 'kurir' || auth()->user()->role == 'admin')
     <h5 class="card-header">Daftar Pesanan</h5>
 
     @elseif(auth()->user()->role == 'pelanggan')
@@ -111,14 +101,17 @@
                             </button>
                         </form> 
                         @elseif($row->status_pemesanan == 'kurir jemput pesanan')
-                        <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#modalTipeLayanan{{ $row->id }}" class=" btn btn-outline-primary">
-                            <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
-                        </button> -->
-                        <form action="{{ route('berat-live', $row->id) }}" method="GET">
-                            <button type="submit" class=" btn btn-outline-primary">
+                            @if($row->layanan->jenis_satuan == 'satuan')
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksiSatuan{{ $row->id }}" class=" btn btn-outline-primary">
                                 <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
                             </button>
-                        </form>
+                            @elseif($row->layanan->jenis_satuan == 'kiloan')
+                            <form action="{{ route('berat-live', $row->id) }}" method="GET">
+                                <button type="submit" class=" btn btn-outline-primary">
+                                    <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
+                                </button>
+                            </form>
+                            @endif
                         @elseif($row->status_pemesanan == 'pesanan sedang diproses')
                         <form action="{{ route('konfirmasipesananantar', $row->id) }}" method="POST">
                             @csrf
@@ -266,7 +259,7 @@
 <!-- END -->
 
 <!-- MODAL TIPE LAYANAN UNTUK KURIR -->
-@foreach($pesananDaftar as $row)
+<!-- @foreach($pesananDaftar as $row)
 <div class="modal fade" id="modalTipeLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -279,12 +272,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksiSatuan{{ $row->id }}">Satuan</button>
-                <button type=" submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksiKiloan{{ $row->id }}">Kiloan</button>
+                <form action="{{ route('berat-live',$row->id) }}">
+                    <button type=" submit" class="btn btn-primary">Kiloan</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-@endforeach
+@endforeach -->
 
 <!-- MODAL BUAT TRANSAKSI SATUAN UTK KURIR-->
 @foreach($pesananDaftar as $row)
@@ -295,7 +290,7 @@
                 <h5 class="modal-title" id="exampleModalLabel1">Tambah Transaksi Satuan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('tambahtransaksisatuan', $row->id) }}" method="POST">
+            <form action="{{ route('tambahtransaksisatuan', $row->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="row g-2">
@@ -307,29 +302,22 @@
                     </div>
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="defaultSelect" class="form-label"><b>Layanan</b></label>
+                            <label for="defaultSelect" class="form-label"><b>Layanan : Satuan</b></label>
                             <input type="text" name="layanan_id" class="form-control" value="{{ $row->layanan->jenis_layanan }}" readonly>
                             <input type="hidden" name="layanan_id" value="{{ $row ? $row->layanan->id : '' }}">
-                            <!-- <select id="defaultSelect" class="form-select" name="layanan_id" required oninvalid="this.setCustomValidity('Pilih Jenis Layanan Terlebih dahulu.')" oninput="this.setCustomValidity('')">
-                                <option disabled selected value="">Pilih Jenis Layanan</option>
-                                @foreach($layananDaftar as $row)
-                                @if($row->jenis_satuan == 'satuan')
-                                <option value=" {{ $row->id }}">{{ $row->jenis_layanan}}</option>
-                                @endif
-                                @endforeach
-                            </select> -->
+                        </div>
+                    </div>
+                    <input type="hidden" name="tgl_ditimbang" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
+                    <div class="row g-2">
+                        <div class="col mb-1">
+                            <label for="dobBasic" class="form-label"><b>Jumlah Helai Satuan</b></label>
+                            <input type="number" name="jumlah" class="form-control" placeholder="Masukkan Jumlah Helai Satuan." required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Tanggal Ditimbang</b></label>
-                            <input type="date" name="tgl_ditimbang" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Jumlah</b></label>
-                            <input type="number" name="jumlah" class="form-control">
+                            <label for="dobBasic" class="form-label"><b>Foto Pakaian</b></label>
+                            <input type="file" name="foto_pakaian" class="form-control" accept=".jpg, .jpeg, .heic" required>
                         </div>
                     </div>
                     <div class=" row g-2">
@@ -355,7 +343,7 @@
 <!-- END -->
 
 <!-- MODAL BUAT TRANSAKSI KILOAN UTK KURIR-->
-@foreach($pesananDaftar as $row)
+<!-- @foreach($pesananDaftar as $row)
 <div class="modal fade" id="modalBuatTransaksiKiloan{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -423,7 +411,7 @@
         </div>
     </div>
 </div>
-@endforeach
+@endforeach -->
 <!-- END -->
 
 <!-- MODAL EDIT PESANAN -->

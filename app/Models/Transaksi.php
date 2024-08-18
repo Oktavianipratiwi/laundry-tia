@@ -25,7 +25,8 @@ class Transaksi extends Model
         'status_pembayaran',
         'tanggal_pembayaran',
         'bukti_pembayaran',
-        'status_pengantaran'
+        'status_pengantaran',
+        'foto_pakaian'
     ];
 
     public function user()

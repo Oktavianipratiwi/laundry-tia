@@ -57,7 +57,7 @@ $navbarHideToggle = false;
                         </div>
                         <div class="row g-2">
                             <div class="col mb-1">
-                                <label for="defaultSelect" class="form-label"><b>Layanan</b></label>
+                                <label for="defaultSelect" class="form-label"><b>Layanan : Kiloan</b></label>
                                 <input type="text" name="layanan_id" class="form-control" value="{{ $pesananDaftar->layanan->jenis_layanan }}" readonly>
                                 <input type="hidden" name="layanan_id" value="{{ $pesananDaftar->layanan->id }}">
                             </div>
@@ -68,13 +68,13 @@ $navbarHideToggle = false;
                         <div class="row g-2">
                             <div class="col mb-1">
                                 <label for="dobBasic" class="form-label"><b>Total Berat (Dalam KG)</b></label>
-                                <input type="text" name="total_berat" class="form-control" value="{{ $berat ? $berat->weight : '' }}" >
+                                <input type="text" name="total_berat" class="form-control" value="{{ $berat ? $berat->weight : '' }}" required readonly>
                                 </div>
                         </div>
                         <div class="row g-2">
                             <div class="col mb-1">
-                                <label for="dobBasic" class="form-label"><b>Jumlah</b></label>
-                                <input type="number" name="jumlah" class="form-control">
+                                <label for="dobBasic" class="form-label"><b>Jumlah Helai Pakaian</b></label>
+                                <input type="number" name="jumlah" class="form-control" required placeholder="Masukkan Jumlah Helai Pakaian.">
                             </div>
                         </div>
                         <div class="row g-2">

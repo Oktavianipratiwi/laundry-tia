@@ -15,10 +15,10 @@ use Illuminate\Support\Facades\Mail;
 
 class BeratLiveController extends Controller
 {
-    public function index()
+    public function index($id)
     {
         $berat = Weight::latest()->first(); // Ini akan memberikan model tunggal
-        $pesananDaftar = Pemesanan::first();
+        $pesananDaftar = Pemesanan::find($id); // Mengambil Pemesanan berdasarkan ID
         return view('beratlive.berat-live', compact('berat','pesananDaftar'));
     }
 
