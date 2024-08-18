@@ -17,4 +17,9 @@ class Layanan extends Model
         'jenis_satuan',
         'durasi_layanan'
     ];
+
+    public function layanan()
+    {
+        return $this->hasMany(Layanan::class, 'id_layanan', 'id');
+    }
 }

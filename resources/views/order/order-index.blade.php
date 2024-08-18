@@ -111,9 +111,14 @@
                             </button>
                         </form> 
                         @elseif($row->status_pemesanan == 'kurir jemput pesanan')
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalTipeLayanan{{ $row->id }}" class=" btn btn-outline-primary">
+                        <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#modalTipeLayanan{{ $row->id }}" class=" btn btn-outline-primary">
                             <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
-                        </button>
+                        </button> -->
+                        <form action="{{ route('berat-live', $row->id) }}" method="GET">
+                            <button type="submit" class=" btn btn-outline-primary">
+                                <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
+                            </button>
+                        </form>
                         @elseif($row->status_pemesanan == 'pesanan sedang diproses')
                         <form action="{{ route('konfirmasipesananantar', $row->id) }}" method="POST">
                             @csrf
@@ -224,12 +229,7 @@
             <form action="{{ route('tambahpesanan') }}" method="POST">
                 @csrf
                 <div class="modal-body">
-                    <div class="row g-2">
-                        <div class="col mb-3">
-                            <label for="dobBasic" class="form-label"><b>Tanggal Pemesanan</b></label>
-                            <input type="date" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" readonly>
-                        </div>
-                    </div>
+                    <input type="hidden" name="tgl_pemesanan" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}" readonly>
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label"><b>Tanggal Dijemput Kurir</b></label>
@@ -239,21 +239,21 @@
                     <div class="row g-2">
                         <div class="col mb-3">
                             <label for="dobBasic" class="form-label"><b>Jam Jemput Kurir</b></label>
-                            <input type="time" name="jam_jemput" class="form-control" required>
+                            <input type="time" name="jam_jemput" class="form-control" value="{{ \Carbon\Carbon::now()->format('H:i') }}" required>
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col mb-3">
-                            <label for="emailBasic" class="form-label"><b>Alamat</b></label>
-                            <textarea class="form-control" name="alamat" placeholder="Masukkan Alamat Lengkap" required>{{ auth()->user()->alamat }}</textarea>
+                            <label for="dobBasic" class="form-label"><b>Layanan</b></label>
+                            <select name="id_layanan" class="form-select" required>
+                                @foreach ($layananDaftar as $layanan )
+                                <option value="{{ $layanan->id }}">{{ $layanan->jenis_layanan }} - {{ $layanan->jenis_satuan }} - Rp{{ number_format($layanan->harga, 0, ',', '.') }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <div class="col mb-3">
-                            <label for="dobBasic" class="form-label"><b>Kontak</b></label>
-                            <input type="tel" name="no_telp" class="form-control" placeholder="Silahkan masukkan Nomor Hp" value="{{ auth()->user()->no_telp }}" required pattern="[0-9]{10,}" title="Masukkan nomor telepon minimal 10 digit angka">
-                        </div>
-                    </div>
+                    <input type="hidden" name="alamat" class="form-control" value="{{ auth()->user()->alamat }}">
+                    <input type="hidden" name="no_telp" class="form-control" value="{{ auth()->user()->no_telp }}">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -308,14 +308,16 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="defaultSelect" class="form-label"><b>Layanan</b></label>
-                            <select id="defaultSelect" class="form-select" name="layanan_id" required oninvalid="this.setCustomValidity('Pilih Jenis Layanan Terlebih dahulu.')" oninput="this.setCustomValidity('')">
+                            <input type="text" name="layanan_id" class="form-control" value="{{ $row->layanan->jenis_layanan }}" readonly>
+                            <input type="hidden" name="layanan_id" value="{{ $row ? $row->layanan->id : '' }}">
+                            <!-- <select id="defaultSelect" class="form-select" name="layanan_id" required oninvalid="this.setCustomValidity('Pilih Jenis Layanan Terlebih dahulu.')" oninput="this.setCustomValidity('')">
                                 <option disabled selected value="">Pilih Jenis Layanan</option>
                                 @foreach($layananDaftar as $row)
                                 @if($row->jenis_satuan == 'satuan')
                                 <option value=" {{ $row->id }}">{{ $row->jenis_layanan}}</option>
                                 @endif
                                 @endforeach
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                     <div class="row g-2">
@@ -328,12 +330,6 @@
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Jumlah</b></label>
                             <input type="number" name="jumlah" class="form-control">
-                        </div>
-                    </div>
-                    <div class=" row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Diskon</b></label>
-                            <input type="number" name="diskon" class="form-control" value="0">
                         </div>
                     </div>
                     <div class=" row g-2">
@@ -364,7 +360,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Tambah Transaksi</h5>
+                <h5 class="modal-title" id="exampleModalLabel1">Tambah Transaksi Kiloan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('tambahtransaksikiloan', $row->id) }}" method="POST">
@@ -399,19 +395,13 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Total Berat (dalam Kg)</b></label>
-                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}" readonly>
+                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}" >
                         </div>
                     </div>
                     <div class=" row g-2">
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Jumlah Helai Pakaian (dalam PCS)</b></label>
-                            <input type="number" name="helai_pakaian" class="form-control" value="0">
-                        </div>
-                    </div>
-                    <div class=" row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Diskon</b></label>
-                            <input type="number" name="diskon" class="form-control" value="0">
+                            <input type="number" name="helai_pakaian" class="form-control" placeholder="Masukkan helai pakaian." required>
                         </div>
                     </div>
                     <div class=" row g-2">

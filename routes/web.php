@@ -95,8 +95,9 @@ Route::middleware(['auth', 'checkRole:kurir'])->group(function () {
     // BERAT TIMBANGAN
     Route::get('/weights', [WeightController::class, 'index'])->name('weights.index');
 
-    Route::get('/berat-live', [BeratLiveController::class, 'index']);
+    Route::get('/berat-live/{id}', [BeratLiveController::class, 'index'])->name('berat-live');
     Route::get('/get-latest-weight', [BeratLiveController::class, 'getLatestWeight']);
+    Route::post('/tambahtransaksikiloan/{id}', [BeratLiveController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
 });
 
 // RUTE UNTUK HAK AKSES PELANGGAN SAJA

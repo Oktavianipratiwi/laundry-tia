@@ -76,12 +76,6 @@
                 </div>
                 @endif
                 <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>Diskon</b></label>
-                    <div class="col-sm-10">
-                        <input type="text" id="basic-default-phone" name="diskon" class="form-control phone-mask" aria-label="658 799 8941" aria-describedby="basic-default-phone" value="{{ number_format($transaksi->diskon, 0, ',', '.') }}" readonly />
-                    </div>
-                </div>
-                <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>Total Bayar</b></label>
                     <div class="col-sm-10">
                         <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask" aria-label="658 799 8941" aria-describedby="basic-default-phone" value="Rp{{ number_format($transaksi->total_bayar, 0, ',', '.') }}" readonly />

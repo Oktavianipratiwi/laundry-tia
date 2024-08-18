@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('pemesanan', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->dateTime('tgl_pemesanan');
             $table->dateTime('tgl_penjemputan');
             $table->dateTime('tgl_pengantaran')->nullable();
@@ -25,6 +23,12 @@ return new class extends Migration
             $table->enum('status_pemesanan', ['pesanan belum diproses', 'kurir jemput pesanan',  'pesanan sedang diproses', 'kurir antar pesanan','pesanan selesai', 'pesanan ditolak'])->default('pesanan belum diproses');
             $table->string('alasan_penolakan')->nullable();
             $table->timestamps();
+
+            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_layanan');
+
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_layanan')->references('id')->on('layanan')->onDelete('cascade');
         });
     }
 

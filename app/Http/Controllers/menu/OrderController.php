@@ -24,8 +24,7 @@ class OrderController extends Controller
         $user = auth()->user();
 
         $weight_data = Weight::latest()->first();
-
-
+        
         if ($user->role === 'pelanggan') {
             // Jika role pelanggan, tampilkan hanya pesanan milik user yang login
             $pesananDaftar = Pemesanan::where('id_user', $user->id)->get();
@@ -49,6 +48,7 @@ class OrderController extends Controller
         $pemesanan->tgl_penjemputan = $request->tgl_penjemputan;
         $pemesanan->jam_jemput = $request->jam_jemput;
         $pemesanan->no_telp = $request->no_telp;
+        $pemesanan->id_layanan = $request->id_layanan;
         $pemesanan->status_pemesanan = 'pesanan belum diproses';
         $pemesanan->save();
 
@@ -156,9 +156,7 @@ class OrderController extends Controller
         $total_berat = $request->input('total_berat');
         $total_bayar = $total_berat * $harga;
 
-        $diskon = $request->input('diskon', 0);
-        $total_bayar_setelah_diskon = $total_bayar - $diskon;
-
+        $total_bayar_setelah_diskon = $total_bayar;
         $status_pembayaran = $request->input('status_pembayaran');
         $tanggal_pembayaran = null;
 
@@ -174,7 +172,6 @@ class OrderController extends Controller
             'total_berat' => $total_berat,
             'jumlah' => null,
             'helai_pakaian' => $request->input('helai_pakaian'),
-            'diskon' => $diskon,
             'status_pembayaran' => $status_pembayaran,
             'tanggal_pembayaran' => $tanggal_pembayaran,            
             'total_bayar' => $total_bayar_setelah_diskon,
@@ -184,20 +181,29 @@ class OrderController extends Controller
 
         // Update tgl_penjemputan dan tgl_pengantaran
         $tgl_penjemputan = Carbon::parse($pesanan->tgl_penjemputan);
-        $jam_jemput = Carbon::parse($pesanan->jam_jemput); // Mengambil jam jemput dari tabel pemesanan
-        $tgl_pengantaran = $tgl_penjemputan;
-        $jam_antar = $jam_jemput;
+        $jam_jemput = Carbon::parse($pesanan->jam_jemput);
+        $tgl_pengantaran = $tgl_penjemputan->copy();
+        $jam_antar = $jam_jemput->copy();
 
         // Cek jenis layanan dan tambahkan waktu sesuai
         if ($layanan->jenis_satuan == 'kiloan' && $layanan->durasi_layanan == '2 hari') {
-            $tgl_pengantaran = $tgl_pengantaran->addDays(2);
-            $jam_antar = $jam_jemput; 
-        }elseif ($layanan->jenis_satuan == 'kiloan' && $layanan->durasi_layanan == '12 jam') {
-            $jam_antar = $jam_antar->addHours(12);
-
-            if ($jam_antar->hour >= 24) {
-                $tgl_pengantaran = $tgl_pengantaran->addDay();
-                $jam_antar = $jam_antar->subHours(24); // Reset jam_antar ke format 24 jam
+            $tgl_pengantaran->addDays(2);
+            $jam_antar = $jam_jemput->copy();
+        } elseif ($layanan->jenis_satuan == 'kiloan' && $layanan->durasi_layanan == '12 jam') {
+            if ($jam_jemput->hour >= 12 && $jam_jemput->hour < 24) {
+                // Jika jam jemput antara 12:00 - 23:59
+                $tgl_pengantaran->addDay();
+                $jam_antar->addHours(12);
+                if ($jam_antar->hour >= 24) {
+                    $jam_antar->subHours(24);
+                }
+            } else {
+                // Jika jam jemput antara 00:01 - 11:59
+                $jam_antar->addHours(12);
+                if ($jam_antar->hour >= 24) {
+                    $tgl_pengantaran->addDay();
+                    $jam_antar->subHours(24);
+                }
             }
         }
 
@@ -236,8 +242,7 @@ class OrderController extends Controller
         $jumlah = $request->input('jumlah');
         $total_bayar = $jumlah * $harga;
 
-        $diskon = $request->input('diskon', 0);
-        $total_bayar_setelah_diskon = $total_bayar - $diskon;
+        $total_bayar_setelah_diskon = $total_bayar;
 
         $status_pembayaran = $request->input('status_pembayaran');
         $tanggal_pembayaran = null;
@@ -254,7 +259,6 @@ class OrderController extends Controller
             'jumlah' => $jumlah,
             'total_berat' => null,
             'helai_pakaian' => null,
-            'diskon' => $diskon,
             'status_pembayaran' => $status_pembayaran,
             'tanggal_pembayaran' => $tanggal_pembayaran, 
             'total_bayar' => $total_bayar_setelah_diskon,
@@ -264,22 +268,34 @@ class OrderController extends Controller
 
         // Update tgl_penjemputan dan tgl_pengantaran
         $tgl_penjemputan = Carbon::parse($pesanan->tgl_penjemputan);
-        $jam_jemput = Carbon::parse($pesanan->jam_jemput); // Mengambil jam jemput dari tabel pemesanan
-        $tgl_pengantaran = $tgl_penjemputan;
-        $jam_antar = $jam_jemput;
+        $jam_jemput = Carbon::parse($pesanan->jam_jemput);
+        $tgl_pengantaran = $tgl_penjemputan->copy();
+        $jam_antar = $jam_jemput->copy();
 
         // Cek jenis layanan dan tambahkan waktu sesuai
         if ($layanan->jenis_satuan == 'satuan' && $layanan->durasi_layanan == '2 hari') {
-            $tgl_pengantaran = $tgl_pengantaran->addDays(2);
-            $jam_antar = $jam_jemput; 
-        }elseif ($layanan->jenis_satuan == 'satuan' && $layanan->durasi_layanan == '12 jam') {
-            $jam_antar = $jam_antar->addHours(12);
-
-            if ($jam_antar->hour >= 24) {
-                $tgl_pengantaran = $tgl_pengantaran->addDay();
-                $jam_antar = $jam_antar->subHours(24); // Reset jam_antar ke format 24 jam
+            $tgl_pengantaran->addDays(2);
+            $jam_antar = $jam_jemput->copy();
+        } elseif ($layanan->jenis_satuan == 'satuan' && $layanan->durasi_layanan == '12 jam') {
+            if ($jam_jemput->hour >= 12 && $jam_jemput->hour < 24) {
+                // Jika jam jemput antara 12:00 - 23:59
+                $tgl_pengantaran->addDay();
+                $jam_antar->addHours(12);
+                if ($jam_antar->hour >= 24) {
+                    $jam_antar->subHours(24);
+                }
+            } else {
+                // Jika jam jemput antara 00:01 - 11:59
+                $jam_antar->addHours(12);
+                if ($jam_antar->hour >= 24) {
+                    $tgl_pengantaran->addDay();
+                    $jam_antar->subHours(24);
+                }
             }
         }
+
+    $tgl_pengantaran = $tgl_pengantaran->format('Y-m-d');
+    $jam_antar = $jam_antar->format('H:i:s');
 
         $pesanan->update([
             'tgl_pengantaran' => $tgl_pengantaran,

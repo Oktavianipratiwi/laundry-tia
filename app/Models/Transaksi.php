@@ -19,7 +19,6 @@ class Transaksi extends Model
         'total_berat',
         'jumlah',
         'helai_pakaian',
-        'diskon',
         'tgl_ditimbang',
         'tgl_diambil',
         'total_bayar',
