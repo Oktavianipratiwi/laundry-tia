@@ -18,11 +18,11 @@ class TransactionsController extends Controller
         if ($user->role === 'pelanggan') {
             // Jika role pelanggan, tampilkan hanya transaksi milik user yang login
             $transaksiDaftar = Transaksi::where('user_id', $user->id)->get();
-        } elseif ($user->role === 'pegawai') {
-            // Jika role pegawai, tampilkan semua transaksi
+        } elseif ($user->role === 'kurir') {
+            // Jika role kurir, tampilkan semua transaksi
             $transaksiDaftar = Transaksi::all();
         } else {
-            // Contoh default untuk role selain pelanggan dan pegawai, bisa disesuaikan dengan role lainnya
+            // Contoh default untuk role selain pelanggan dan kurir, bisa disesuaikan dengan role lainnya
             $transaksiDaftar = Transaksi::all();
         }
 

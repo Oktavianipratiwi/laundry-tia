@@ -22,7 +22,8 @@ return new class extends Migration
             $table->time('jam_antar')->default('00:00:00');
             $table->string('alamat');
             $table->string('no_telp');
-            $table->enum('status_pemesanan', ['sudah diproses', 'belum diproses', 'pegawai menuju lokasi', 'sudah diperiksa', 'antar pesanan'])->default('belum diproses');
+            $table->enum('status_pemesanan', ['pesanan belum diproses', 'kurir jemput pesanan',  'pesanan sedang diproses', 'kurir antar pesanan','pesanan selesai', 'pesanan ditolak'])->default('pesanan belum diproses');
+            $table->string('alasan_penolakan')->nullable();
             $table->timestamps();
         });
     }

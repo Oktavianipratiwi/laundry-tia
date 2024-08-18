@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\AntarPesanan;
 use App\Mail\JemputPesanan;
 use App\Mail\ProsesPesanan;
+use App\Mail\TolakPesanan;
 use App\Models\Layanan;
 use App\Models\Pemesanan;
 use App\Models\Transaksi;
@@ -14,7 +15,6 @@ use App\Models\Weight;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
@@ -49,13 +49,12 @@ class OrderController extends Controller
         $pemesanan->tgl_penjemputan = $request->tgl_penjemputan;
         $pemesanan->jam_jemput = $request->jam_jemput;
         $pemesanan->no_telp = $request->no_telp;
-        $pemesanan->status_pemesanan = 'belum diproses';
+        $pemesanan->status_pemesanan = 'pesanan belum diproses';
         $pemesanan->save();
 
         return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
     }
 
-    
     // UNTUK KURIR
     public function konfirmasiwhatsapp($id)
     {
@@ -77,6 +76,22 @@ class OrderController extends Controller
     }
 
     // UNTUK KURIR
+    public function konfirmasipesananditolak(Request $request, $id)
+    {
+        $pemesanan = Pemesanan::findOrFail($id);
+
+        $user = User::findOrFail($pemesanan->id_user);
+
+        Mail::to($user->email)->send(new TolakPesanan($user, $pemesanan));
+
+        $pemesanan->status_pemesanan = 'pesanan ditolak';
+        $pemesanan->alasan_penolakan = $request->input('alasan_penolakan');
+        $pemesanan->save();
+
+        return redirect()->route('order-index')->with('success', 'Pesanan berhasil ditolak.');
+    }
+
+    // UNTUK KURIR
     public function konfirmasipesananjemput($id)
     {
         $pesanan = Pemesanan::findOrFail($id);
@@ -86,7 +101,7 @@ class OrderController extends Controller
         $kurir = auth()->user();
         Mail::to($user->email)->send(new JemputPesanan($user->name, $kurir->name, $kurir->no_telp));
 
-        $pesanan->status_pemesanan = 'pegawai menuju lokasi';
+        $pesanan->status_pemesanan = 'kurir jemput pesanan';
         $pesanan->jam_jemput = Carbon::now()->format('H:i:s');
         $pesanan->save();
 
@@ -104,13 +119,14 @@ class OrderController extends Controller
         $kurir = auth()->user();
         Mail::to($user->email)->send(new AntarPesanan($user->name, $kurir->name, $kurir->no_telp));
 
-        $pesanan->status_pemesanan = 'antar pesanan';
+        $pesanan->status_pemesanan = 'kurir antar pesanan';
         $pesanan->jam_antar = Carbon::now()->format('H:i:s');
         $pesanan->save();
 
         return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
     }
 
+    // UTK KURIR
     public function pesananselesai($id)
     {
         $pesanan = Pemesanan::findOrFail($id);
@@ -123,7 +139,7 @@ class OrderController extends Controller
             $transaksi->save();
         }
 
-        $pesanan->status_pemesanan = 'sudah diperiksa';
+        $pesanan->status_pemesanan = 'pesanan selesai';
         $pesanan->save();
 
         return redirect()->route('order-index')->with('success', 'Pesanan selesai.');
@@ -191,7 +207,7 @@ class OrderController extends Controller
         $pesanan->update([
             'tgl_pengantaran' => $tgl_pengantaran,
             'jam_antar' => $jam_antar,
-            'status_pemesanan' => 'sudah diproses'
+            'status_pemesanan' => 'pesanan sedang diproses'
         ]);        
         $pesanan->save();
 
@@ -268,7 +284,7 @@ class OrderController extends Controller
         $pesanan->update([
             'tgl_pengantaran' => $tgl_pengantaran,
             'jam_antar' => $jam_antar,
-            'status_pemesanan' => 'sudah diproses'
+            'status_pemesanan' => 'pesanan sedang diproses'
         ]);        
         $pesanan->save();
 
@@ -278,7 +294,7 @@ class OrderController extends Controller
         Mail::to($user->email)->send(new ProsesPesanan($transaksi, $user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
 
-        $pesanan->status_pemesanan = 'sudah diproses';
+        $pesanan->status_pemesanan = 'pesanan sedang diproses';
         $pesanan->save();
 
         return redirect()->route('order-index')->with('success', 'Transaksi berhasil.')
@@ -289,6 +305,7 @@ class OrderController extends Controller
         ]);
     }
 
+    // UNTUK KURIR
     public function editpesanan(Request $request, $id)
     {
         $pesanan = Pemesanan::find($id);
@@ -298,6 +315,7 @@ class OrderController extends Controller
         return redirect()->route('order-index')->with('success', 'Pesanan berhasil diubah.');
     }
 
+    // UNTUK KURIR
     public function hapuspesanan($id)
     {
         $pesanan = Pemesanan::find($id);

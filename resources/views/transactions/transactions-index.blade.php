@@ -53,8 +53,8 @@
                     <td><span class="badge bg-label-success me-1">Lunas via cash</span></td>
                     @elseif($row->status_pembayaran == 'belum lunas')
                     <td><span class="badge bg-label-warning me-1">Belum Lunas</span></td>
-                    @elseif($row->pemesanan->status_pemesanan == 'sudah diperiksa')
-                    <td><span class="badge bg-label-warning me-1">Lunas - Sudah Diperiksa</span></td>
+                    @elseif($row->pemesanan->status_pemesanan == 'pesanan selesai')
+                    <td><span class="badge bg-label-warning me-1">Pesanan Selesai</span></td>
                     @endif
                     @if($row->status_pengantaran == 'belum diantar')
                     <td><span class="badge bg-label-danger me-1">Belum diantar</span></td>
@@ -118,8 +118,8 @@
                         <td><span class="badge bg-label-success me-1">Lunas via cash</span></td>
                         @elseif($row->status_pembayaran == 'belum lunas')
                         <td><span class="badge bg-label-warning me-1">Belum Lunas</span></td>
-                        @elseif($row->pemesanan->status_pemesanan == 'sudah diperiksa')
-                        <td><span class="badge bg-label-warning me-1">Lunas - Sudah Diperiksa</span></td>
+                        @elseif($row->pemesanan->status_pemesanan == 'pesanan selesai')
+                        <td><span class="badge bg-label-warning me-1">Pesanan Selesai</span></td>
                         @endif
                         @if($row->status_pengantaran == 'belum diantar')
                         <td><span class="badge bg-label-danger me-1">Belum diantar</span></td>
@@ -166,7 +166,7 @@
                     <tbody class="table-border-bottom-0">
                         @if($transaksiDaftar->isEmpty())
                         <tr>
-                            <td colspan="4" class="text-center"><b>Transaksi belum ada</b></td>
+                            <td colspan="6" class="text-center"><b>Transaksi belum ada</b></td>
                         </tr>
                         @endif
                         @foreach($transaksiDaftar as $key => $row)

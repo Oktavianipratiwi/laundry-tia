@@ -11,7 +11,7 @@ class CourierController extends Controller
 {
     public function index()
     {
-        $kurirDaftar = User::where('role', 'pegawai')->get();
+        $kurirDaftar = User::where('role', 'kurir')->get();
 
         return view('courier.courier-index', compact('kurirDaftar'));
     }
@@ -24,7 +24,7 @@ class CourierController extends Controller
             'alamat' => $request->input('alamat'),
             'no_telp' => $request->input('no_telp'),
             'email' => $request->input('email'),
-            'role' => 'pegawai',
+            'role' => 'kurir',
             'created_at' => now(),
             'updated_at' => now()
         ]);

@@ -23,10 +23,10 @@ class Analytics extends Controller
     $userName = Auth::user()->name; // Sesuaikan dengan kolom nama yang ada di database
 
     // Mengambil data dari tabel-tabel yang relevan
-    $activeOrders = Pemesanan::where('status_pemesanan', '!=', 'sudah diproses')->count();
+    $activeOrders = Pemesanan::where('status_pemesanan', '!=', 'pesanan sedang diproses')->count();
     $completedTransactions = Transaksi::where('status_pembayaran', 'lunas')->count();
     $totalCustomers = User::where('role', 'pelanggan')->count();
-    $totalCouriers = User::where('role', 'pegawai')->count();
+    $totalCouriers = User::where('role', 'kurir')->count();
     $recentOrders = Pemesanan::orderBy('created_at', 'desc')->take(5)->get();
     $dailyRevenue = Transaksi::whereDate('created_at', now()->toDateString())->count();
     $monthlyRevenue = Transaksi::whereMonth('created_at', now()->month)->count();

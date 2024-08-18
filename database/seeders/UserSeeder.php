@@ -29,24 +29,24 @@ class UserSeeder extends Seeder
 
         // Tambahkan data pelanggan
         DB::table('users')->insert([
-            'name' => 'user',
+            'name' => 'pelanggan',
             'alamat' => 'Limau Manis',
             'no_telp' => '081234556789',
-            'email' => 'user@gmail.com',
-            'password' => Hash::make('user'),
+            'email' => 'pelanggan@gmail.com',
+            'password' => Hash::make('pelanggan'),
             'role' => 'pelanggan',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        // Tambahkan data pegawai
+        // Tambahkan data kurir
         DB::table('users')->insert([
-            'name' => 'pegawai',
+            'name' => 'kurir',
             'alamat' => 'Pariaman',
             'no_telp' => '081345678909',
-            'email' => 'pegawai@gmail.com',
-            'password' => Hash::make('pegawai'),
-            'role' => 'pegawai',
+            'email' => 'kurir@gmail.com',
+            'password' => Hash::make('kurir'),
+            'role' => 'kurir',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

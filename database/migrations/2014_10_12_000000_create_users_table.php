@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role'); // Tambahkan kolom role dengan nilai default 'pelanggan'
+            $table->enum('role',['admin','kurir','pelanggan']); // Tambahkan kolom role dengan nilai default 'pelanggan'
             $table->rememberToken();
             $table->timestamps();
         });

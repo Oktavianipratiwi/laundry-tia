@@ -29,7 +29,7 @@
 </div>
 @endif
 <div class="card">
-    @if(auth()->user()->role == 'pegawai')
+    @if(auth()->user()->role == 'kurir')
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Daftar Pesanan</h5>
         <form action="{{url('berat-live')}}" method="GET">
@@ -52,19 +52,15 @@
     @endif
 
     <div class="table-responsive text-nowrap">
-        @if(auth()->user()->role == 'pegawai')
+        @if(auth()->user()->role == 'kurir')
         <table class="table">
             <thead>
                 <tr>
                     <th>No</th>
                     <th>Nama Pelanggan</th>
-                    <!-- <th>Tanggal Pemesanan</th>
-                    <th>Tanggal Penjemputan</th>
-                    <th>Tanggal Pengantaran</th> -->
                     <th>Tanggal dan Jam Jemput</th>
                     <th>Tanggal dan Jam Antar</th>
                     <th>Alamat</th>
-                    <!-- <th>Kontak</th> -->
                     <th>Status</th>
                     <th class="text-center" colspan="2">Actions</th>
                 </tr>
@@ -79,23 +75,6 @@
                 <tr>
                     <td>{{ $key+1 }}</td>
                     <td>{{ $row->user->name }}</td>
-                    <!-- <td>{{ \Carbon\Carbon::parse($row->tgl_pemesanan)->translatedFormat('l, j F Y') }}</td> -->
-                    <!-- @if($row->tgl_penjemputan)
-                    <td>
-                        {{ \Carbon\Carbon::parse($row->tgl_penjemputan)->translatedFormat('l, j F Y') }}
-                        </td>
-                    @else
-                    <td><b>
-                        Belum ditentukan
-                        </b></td>
-                    @endif
-                    @if($row->tgl_pengantaran)
-                    <td>
-                        {{ \Carbon\Carbon::parse($row->tgl_penjemputan)->translatedFormat('l, j F Y') }}
-                        </td>
-                    @else
-                        <td><b>Belum ditentukan</b></td>
-                    @endif -->
                     @if($row->tgl_penjemputan == null)
                     <td><b>Belum diatur</b></td>
                     @else
@@ -107,50 +86,55 @@
                     <td>{{ \Carbon\Carbon::parse($row->tgl_pengantaran)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($row->jam_antar)->format('H:i') }} WIB</td>
                     @endif
                     <td>{{ $row->alamat }}</td>
-                    <!-- <td>{{ $row->no_telp }}</td> -->
                     <td>
-                        @if($row->status_pemesanan == 'sudah diproses')
-                        <span class="badge bg-label-success me-1">Sudah diproses</span>
-                        @elseif($row->status_pemesanan == 'belum diproses')
-                        <span class="badge bg-label-warning me-1">Belum diproses</span>
-                        @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
+                        @if($row->status_pemesanan == 'pesanan sedang diproses')
+                        <span class="badge bg-label-success me-1">Pesanan sedang diproses</span>
+                        @elseif($row->status_pemesanan == 'pesanan belum diproses')
+                        <span class="badge bg-label-warning me-1">Pesanan belum diproses</span>
+                        @elseif($row->status_pemesanan == 'kurir jemput pesanan')
                         <span class="badge bg-label-info me-1">kurir jemput pesanan</span>
-                        @elseif($row->status_pemesanan == 'antar pesanan')
+                        @elseif($row->status_pemesanan == 'kurir antar pesanan')
                         <span class="badge bg-label-info me-1">kurir antar pesanan</span>
-                        @elseif($row->status_pemesanan == 'sudah diperiksa')
+                        @elseif($row->status_pemesanan == 'pesanan selesai')
                         <span class="badge bg-label-primary me-1">Pesanan selesai</span>
+                        @elseif($row->status_pemesanan == 'pesanan ditolak')
+                        <span class="badge bg-label-danger me-1">Pesanan Ditolak</span>
                         @endif
                     </td>
-                    @if(auth()->user()->role == 'pegawai')
+                    @if(auth()->user()->role == 'kurir')
                     <td>
-                        @if($row->status_pemesanan == 'belum diproses')
+                        @if($row->status_pemesanan == 'pesanan belum diproses')
                         <form action="{{ route('konfirmasipesananjemput', $row->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-outline-primary">
                                 <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Jemput Pesanan
                             </button>
-                        </form>
-                        @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
+                        </form> 
+                        @elseif($row->status_pemesanan == 'kurir jemput pesanan')
                         <button type="button" data-bs-toggle="modal" data-bs-target="#modalTipeLayanan{{ $row->id }}" class=" btn btn-outline-primary">
                             <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
                         </button>
-                        @elseif($row->status_pemesanan == 'sudah diproses')
+                        @elseif($row->status_pemesanan == 'pesanan sedang diproses')
                         <form action="{{ route('konfirmasipesananantar', $row->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-outline-primary">
                                 <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Antar Pesanan
                             </button>
                         </form>
-                        @elseif($row->status_pemesanan == 'antar pesanan')
+                        @elseif($row->status_pemesanan == 'kurir antar pesanan')
                         <form action="{{ route('pesananselesai', $row->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-outline-primary">
                                 <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Pesanan Selesai
                             </button>
                         </form>
-                        @elseif($row->status_pemesanan == 'sudah diperika')
-                        <button type="submit" class="btn btn-outline-primary">
-                            <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Pesanan Selesai
+                        @elseif($row->status_pemesanan == 'pesanan selesai')
+                        <button type="submit" class="btn btn-primary">
+                             Selesai
+                        </button>
+                        @elseif($row->status_pemesanan == 'pesanan ditolak')
+                        <button type="submit" class="btn btn-danger">
+                             Ditolak
                         </button>
                         @endif
                     </td>
@@ -158,11 +142,22 @@
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
+                                @if($row->status_pemesanan == 'pesanan belum diproses')
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTolakPesanan{{ $row->id }}">
+                                    <i class='bx bxs-no-entry me-1'></i> Tolak Pesanan
+                                </a>
+                                @endif
+                                @if($row->status_pemesanan != 'pesanan ditolak')
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiWhatsApp{{ $row->id }}">
                                     <i class="bx bxl-whatsapp me-1"></i> Konfirmasi via WhatsApp
                                 </a>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditPesanan{{ $row->id }}"><i class="bx bx-edit-alt me-1"></i> Edit</a>
-                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusPesanan{{ $row->id }}"><i class="bx bx-trash me-1"></i> Delete</a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditPesanan{{ $row->id }}">
+                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                </a>
+                                @endif
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusPesanan{{ $row->id }}">
+                                    <i class="bx bx-trash me-1"></i> Delete
+                                </a>
                             </div>
                         </div>
                     </td>
@@ -179,9 +174,6 @@
                 <tr>
                     <th>No</th>
                     <th>Tanggal Pemesanan</th>
-                    <!-- <th>Tanggal Penjemputan</th> -->
-                    <!-- <th>Jam Jemput</th>
-                    <th>Tanggal Pengantaran</th> -->
                     <th>Alamat</th>
                     <th>No Telp</th>
                     <th>Status Pemesanan</th>
@@ -198,16 +190,18 @@
                     <td>{{ $row->alamat }}</td>
                     <td>{{ $row->no_telp }}</td>
                     <td>
-                        @if($row->status_pemesanan == 'sudah diproses')
-                        <span class="badge bg-label-success me-1">Sudah diproses</span>
-                        @elseif($row->status_pemesanan == 'belum diproses')
-                        <span class="badge bg-label-warning me-1">Belum diproses</span>
-                        @elseif($row->status_pemesanan == 'pegawai menuju lokasi')
+                        @if($row->status_pemesanan == 'pesanan sedang diproses')
+                        <span class="badge bg-label-success me-1">Pesanan sedang diproses</span>
+                        @elseif($row->status_pemesanan == 'pesanan belum diproses')
+                        <span class="badge bg-label-warning me-1">Pesanan belum diproses</span>
+                        @elseif($row->status_pemesanan == 'kurir jemput pesanan')
                         <span class="badge bg-label-info me-1">kurir jemput pesanan</span>
-                        @elseif($row->status_pemesanan == 'antar pesanan')
+                        @elseif($row->status_pemesanan == 'kurir antar pesanan')
                         <span class="badge bg-label-info me-1">kurir antar pesanan</span>
-                        @elseif($row->status_pemesanan == 'sudah diperiksa')
+                        @elseif($row->status_pemesanan == 'pesanan selesai')
                         <span class="badge bg-label-primary me-1">Pesanan Selesai</span>
+                        @elseif($row->status_pemesanan == 'pesanan ditolak')
+                        <span class="badge bg-label-danger me-1">Pesanan Ditolak - {{ $row->alasan_penolakan }}</span> 
                         @endif
                     </td>
                 </tr>
@@ -530,7 +524,9 @@
     </div>
 </div>
 @endforeach
+<!-- END -->
 
+<!-- MODAL KONFIRMASI WHATSAPP UNTUK KURIR KE PELANGGAN -->
 @foreach($pesananDaftar as $row)
 <div class="modal fade" id="modalKonfirmasiWhatsApp{{ $row->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -553,5 +549,36 @@
     </div>
 </div>
 @endforeach
+<!-- END FOREACH -->
+
+<!-- MODAL TOLAK PESANAN -->
+@foreach($pesananDaftar as $row)
+<div class="modal fade" id="modalTolakPesanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Tolak Pesanan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('konfirmasipesananditolak',$row->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label for="nameWithTitle" class="form-label"><b>Alasan Penolakan</b></label>
+                                <textarea class="form-control" name="alasan_penolakan" placeholder="Masukkan alasan penolakan." required></textarea>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-success">Kirim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+<!-- END -->
 
 @endsection

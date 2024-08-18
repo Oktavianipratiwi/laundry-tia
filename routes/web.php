@@ -31,8 +31,8 @@ Route::post('/validasiotpaksi', [AuthController::class, 'validasiotpaksi'])->nam
 Route::get('/logoutaksi', [AuthController::class, 'logoutaksi'])->name('logoutaksi');
 
 
-// RUTE UNTUK HAK AKSES ADMIN, PEGAWAI, DAN PELANGGAN
-Route::middleware(['auth', 'checkRole:admin,pegawai,pelanggan'])->group(function () {
+// RUTE UNTUK HAK AKSES ADMIN, KURIR, DAN PELANGGAN
+Route::middleware(['auth', 'checkRole:admin,kurir,pelanggan'])->group(function () {
     Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard');
     // order/pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('order-index');
@@ -77,12 +77,13 @@ Route::middleware(['auth', 'checkRole:admin'])->group(function () {
 
 });
 
-// RUTE UTK PEGAWAI SAJA
-Route::middleware(['auth', 'checkRole:pegawai'])->group(function () {
+// RUTE UTK KURIR SAJA
+Route::middleware(['auth', 'checkRole:kurir'])->group(function () {
     // order/pesanan
+    Route::post('/konfirmasipesananditolak/{id}', [OrderController::class, 'konfirmasipesananditolak'])->name('konfirmasipesananditolak');
     Route::post('/konfirmasiwhatsapp/{id}', [OrderController::class, 'konfirmasiwhatsapp'])->name('konfirmasiwhatsapp');
-    Route::post('/konfirmasipesananantar/{id}', [OrderController::class, 'konfirmasipesananantar'])->name('konfirmasipesananantar');
     Route::post('/konfirmasipesananjemput/{id}', [OrderController::class, 'konfirmasipesananjemput'])->name('konfirmasipesananjemput');
+    Route::post('/konfirmasipesananantar/{id}', [OrderController::class, 'konfirmasipesananantar'])->name('konfirmasipesananantar');
     Route::post('/pesananselesai/{id}', [OrderController::class, 'pesananselesai'])->name('pesananselesai');
     Route::post('/editpesanan/{id}', [OrderController::class, 'editpesanan'])->name('editpesanan');
     Route::delete('/hapuspesanan/{id}', [OrderController::class, 'hapuspesanan'])->name('hapuspesanan');

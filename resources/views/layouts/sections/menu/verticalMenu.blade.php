@@ -32,12 +32,12 @@
     $showMenu = true;
 
     if ($userRole !== 'admin') {
-    // Hide specific menus for 'pegawai' and 'pelanggan'
+    // Hide specific menus for 'kurir' and 'pelanggan'
     if (in_array($menu->slug, ['courier-index', 'customers-index'])) {
     $showMenu = false;
     }
     }
-    if ($userRole === 'pegawai') {
+    if ($userRole === 'kurir') {
     if (in_array($menu->slug, ['transactions-index','laporan-index'])) {
     $showMenu = false;
     }
