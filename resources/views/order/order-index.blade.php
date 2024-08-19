@@ -106,7 +106,7 @@
                                 <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
                             </button>
                             @elseif($row->layanan->jenis_satuan == 'kiloan')
-                            <form action="{{ route('berat-live', $row->id) }}" method="GET">
+                            <form action="{{ route('order-kiloan', $row->id) }}" method="GET">
                                 <button type="submit" class=" btn btn-outline-primary">
                                     <span class="tf-icons bx bx-pie-chart-alt me-1"></span>Buat Transaksi
                                 </button>
@@ -258,29 +258,6 @@
 </div>
 <!-- END -->
 
-<!-- MODAL TIPE LAYANAN UNTUK KURIR -->
-<!-- @foreach($pesananDaftar as $row)
-<div class="modal fade" id="modalTipeLayanan{{ $row->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalCenterTitle">Jenis Layanan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Pilih Tipe Layanan Pelanggan
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalBuatTransaksiSatuan{{ $row->id }}">Satuan</button>
-                <form action="{{ route('berat-live',$row->id) }}">
-                    <button type=" submit" class="btn btn-primary">Kiloan</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach -->
-
 <!-- MODAL BUAT TRANSAKSI SATUAN UTK KURIR-->
 @foreach($pesananDaftar as $row)
 <div class=" modal fade" id="modalBuatTransaksiSatuan{{ $row->id }}" tabindex="-1" aria-hidden="true">
@@ -317,7 +294,7 @@
                     <div class="row g-2">
                         <div class="col mb-1">
                             <label for="dobBasic" class="form-label"><b>Foto Pakaian</b></label>
-                            <input type="file" name="foto_pakaian" class="form-control" accept=".jpg, .jpeg, .heic" required>
+                            <input type="file" name="foto_pakaian" class="form-control" accept="image/*" capture="environment" required>
                         </div>
                     </div>
                     <div class=" row g-2">
@@ -340,78 +317,6 @@
     </div>
 </div>
 @endforeach
-<!-- END -->
-
-<!-- MODAL BUAT TRANSAKSI KILOAN UTK KURIR-->
-<!-- @foreach($pesananDaftar as $row)
-<div class="modal fade" id="modalBuatTransaksiKiloan{{ $row->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Tambah Transaksi Kiloan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('tambahtransaksikiloan', $row->id) }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="row g-2">
-                        <div class="col mb-1">
-                            <label for="nameBasic" class="form-label"><b>Nama</b></label>
-                            <input type="text" name="user_id" class="form-control" value="{{ $row->user->name }}" readonly>
-                            <input type="hidden" name="user_id" value="{{ $row ? $row->user->id : '' }}">
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-1">
-                            <label for="emailBasic" class="form-label"><b>Layanan</b></label>
-                            <select id="defaultSelect" class="form-select" name="layanan_id" required oninvalid="this.setCustomValidity('Pilih Jenis Layanan Terlebih dahulu.')" oninput="this.setCustomValidity('')">
-                                <option disabled selected value="">Pilih Jenis Layanan</option>
-                                @foreach($layananDaftar as $row)
-                                @if($row->jenis_satuan == 'kiloan')
-                                <option value="{{ $row->id }}">{{ $row->jenis_layanan}}</option>
-                                @endif
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Tanggal Ditimbang</b></label>
-                            <input type="date" name="tgl_ditimbang" class="form-control" value="{{ \Carbon\Carbon::now()->toDateString() }}">
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Total Berat (dalam Kg)</b></label>
-                            <input type="text" name="total_berat" class="form-control" value="{{ $weight_data ? $weight_data->weight : '' }}" >
-                        </div>
-                    </div>
-                    <div class=" row g-2">
-                        <div class="col mb-1">
-                            <label for="dobBasic" class="form-label"><b>Jumlah Helai Pakaian (dalam PCS)</b></label>
-                            <input type="number" name="helai_pakaian" class="form-control" placeholder="Masukkan helai pakaian." required>
-                        </div>
-                    </div>
-                    <div class=" row g-2">
-                        <div class="col mb-1">
-                            <label for="emailBasic" class="form-label"><b>Status</b></label>
-                            <select id="defaultSelect" class="form-select" name="status_pembayaran" required oninvalid="this.setCustomValidity('Pilih Status Pembayaran Terlebih dahulu.')" oninput="this.setCustomValidity('')">
-                                <option disabled selected value="">Pilih Status Pembayaran</option>
-                                <option value=" belum lunas">Belum Lunas</option>
-                                <option value="lunas">Lunas</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Kirim</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endforeach -->
 <!-- END -->
 
 <!-- MODAL EDIT PESANAN -->

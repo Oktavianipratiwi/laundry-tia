@@ -8,6 +8,7 @@ use App\Http\Controllers\menu\OrderController;
 use App\Http\Controllers\menu\CourierController;
 use App\Http\Controllers\menu\CustomersController;
 use App\Http\Controllers\menu\LaporanController;
+use App\Http\Controllers\menu\PemesananController;
 use App\Http\Controllers\menu\ProfileController;
 use App\Http\Controllers\menu\ServicesController;
 use App\Http\Controllers\menu\TransactionsController;
@@ -95,9 +96,9 @@ Route::middleware(['auth', 'checkRole:kurir'])->group(function () {
     // BERAT TIMBANGAN
     Route::get('/weights', [WeightController::class, 'index'])->name('weights.index');
 
-    Route::get('/berat-live/{id}', [BeratLiveController::class, 'index'])->name('berat-live');
-    Route::get('/get-latest-weight', [BeratLiveController::class, 'getLatestWeight']);
-    Route::post('/tambahtransaksikiloan/{id}', [BeratLiveController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
+    Route::get('/order-kiloan/{id}', [PemesananController::class, 'index'])->name('order-kiloan');
+    Route::get('/get-latest-weight', [PemesananController::class, 'getLatestWeight']);
+    Route::post('/tambahtransaksikiloan/{id}', [PemesananController::class, 'tambahtransaksikiloan'])->name('tambahtransaksikiloan');
 });
 
 // RUTE UNTUK HAK AKSES PELANGGAN SAJA

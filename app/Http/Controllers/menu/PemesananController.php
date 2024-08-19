@@ -13,13 +13,13 @@ use App\Models\Weight;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
-class BeratLiveController extends Controller
+class PemesananController extends Controller
 {
     public function index($id)
     {
         $berat = Weight::latest()->first(); // Ini akan memberikan model tunggal
         $pesananDaftar = Pemesanan::find($id); // Mengambil Pemesanan berdasarkan ID
-        return view('beratlive.berat-live', compact('berat','pesananDaftar'));
+        return view('order.order-kiloan', compact('berat','pesananDaftar'));
     }
 
     public function getLatestWeight()
@@ -47,6 +47,22 @@ class BeratLiveController extends Controller
             $tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
         }
 
+        // Validasi input
+        $request->validate([
+            'foto_pakaian' => 'required|image|mimes:jpeg,jpg,png,heic|max:2048', // Validasi gambar
+        ]);
+
+        // Handle upload foto pakaian
+        if ($request->hasFile('foto_pakaian')) {
+            $file = $request->file('foto_pakaian');
+            $filename = 'assets/pakaian/' . $file->getClientOriginalName();
+            $file->move(public_path('assets/pakaian'), $filename);
+            
+    
+        } else {
+            $filename = null; // Default value if no image is uploaded
+        }
+
         Transaksi::create([
             'user_id' => $request->input('user_id'),
             'layanan_id' => $request->input('layanan_id'),
@@ -55,6 +71,7 @@ class BeratLiveController extends Controller
             'total_berat' => $total_berat,
             'jumlah' => null,
             'helai_pakaian' => $request->input('helai_pakaian'),
+            'foto_pakaian' => $filename,
             'status_pembayaran' => $status_pembayaran,
             'tanggal_pembayaran' => $tanggal_pembayaran,            
             'total_bayar' => $total_bayar_setelah_diskon,

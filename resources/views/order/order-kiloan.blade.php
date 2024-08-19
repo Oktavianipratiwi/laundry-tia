@@ -46,7 +46,7 @@ $navbarHideToggle = false;
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('tambahtransaksikiloan', $pesananDaftar->id) }}" method="POST">
+                    <form action="{{ route('tambahtransaksikiloan', $pesananDaftar->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                         <div class="row g-2">
                             <div class="col mb-1">
@@ -74,13 +74,13 @@ $navbarHideToggle = false;
                         <div class="row g-2">
                             <div class="col mb-1">
                                 <label for="dobBasic" class="form-label"><b>Jumlah Helai Pakaian</b></label>
-                                <input type="number" name="jumlah" class="form-control" required placeholder="Masukkan Jumlah Helai Pakaian.">
+                                <input type="number" name="helai_pakaian" class="form-control" required placeholder="Masukkan Jumlah Helai Pakaian.">
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col mb-1">
                                 <label for="dobBasic" class="form-label"><b>Foto Pakaian</b></label>
-                                <input type="file" accept=".jpg, .jpeg, .heic" name="foto_pakaian" class="form-control">
+                                <input type="file" accept=".jpg, .jpeg, .heic" name="foto_pakaian" class="form-control" required>
                             </div>
                         </div>
                         <div class="row g-2">

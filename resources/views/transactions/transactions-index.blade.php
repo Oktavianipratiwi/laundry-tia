@@ -30,14 +30,15 @@
                     <th>Total Bayar</th>
                     <th>Status Pembayaran</th>
                     <th>Pengantaran</th>
-                    <th>Bukti</th>
+                    <th>Pelunasan</th>
+                    <th>FOTO PAKAIAN</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody class="table-border-bottom-0">
                 @php $no = 1; @endphp
                 @if($transaksiDaftar->sum('total_berat') == 0)
-                <td style="font-weight:bold; text-align:center;" colspan="8">Transaksi Belum Ada</td>
+                <td style="font-weight:bold; text-align:center;" colspan="9">Transaksi Belum Ada</td>
                 @endif
                 @foreach($transaksiDaftar as $key => $row)
                 @if($row->total_berat != null)
@@ -66,6 +67,7 @@
                     @else
                     <td>Tidak Ada</td>
                     @endif
+                    <td><b><a href="{{ asset($row->foto_pakaian) }}" target="_blank">Lihat Pakaian</a></b></td>
                     <td>
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
@@ -95,14 +97,15 @@
                         <th>Total Bayar</th>
                         <th>Status Pembayaran</th>
                         <th>Pengantaran</th>
-                        <th>Bukti</th>
+                        <th>Pelunasan</th>
+                        <th>Foto Pakaian</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
                     @php $no = 1; @endphp <!-- Initialize counter -->
                     @if($transaksiDaftar->sum('jumlah') == 0)
-                    <td style="font-weight:bold; text-align:center;" colspan="8">Transaksi Belum Ada</td>
+                    <td style="font-weight:bold; text-align:center;" colspan="9">Transaksi Belum Ada</td>
                     @endif
                     @foreach($transaksiDaftar as $key => $row)
                     @if($row->jumlah != null)
@@ -131,6 +134,9 @@
                         @else
                         <td>Tidak Ada</td>
                         @endif
+                        <td>
+                            <b><a href="{{ asset($row->foto_pakaian) }}" target="_blank">Lihat Pakaian</a></b>
+                        </td>
                         <td>
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
