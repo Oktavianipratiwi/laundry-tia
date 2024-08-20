@@ -51,45 +51,6 @@ class AuthController extends Controller
         return view('auth.auth-register');
     }
 
-    // public function daftaraksi(Request $request)
-    // {
-    //     // Perform validation to ensure data integrity
-    //     $this->validate($request, [
-    //         'name' => 'required|string|max:255',
-    //         'alamat' => 'required|string',
-    //         'no_telp' => 'required|string',
-    //         'email' => 'required|email|unique:users,email', // Check for unique email
-    //         'password' => 'required|min:8|confirmed', // Enforce password strength and confirmation
-    //     ]);
-
-    //     try {
-    //         // Create a new user instance
-    //         $user = new User([
-    //             'name' => $request->input('name'),
-    //             'alamat' => $request->input('alamat'),
-    //             'no_telp' => $request->input('no_telp'),
-    //             'email' => $request->input('email'),
-    //             'password' => $request->input('password'),
-    //             'role' => 'pelanggan', // Set role as 'pelanggan'
-    //             'created_at' => now(),
-    //             'updated_at' => now(),
-    //         ]);
-
-    //         // Attempt to save the user to the database
-    //         $user->save();
-
-    //         // If successful, authenticate the user and redirect to intended destination
-    //         // Auth::login($user);
-    //         // return redirect()->intended('')->with('success', 'Registrasi berhasil! Silahkan masuk'); // Redirect to intended route after login (e.g., home)
-    //         return view('auth.auth-validasiemail');
-    //     } catch (Exception $e) {
-    //         // Handle potential database errors gracefully (e.g., unique constraint violation)
-    //         return redirect()->back()->withErrors([
-    //             'error' => 'Registration failed. Please try again.',
-    //         ])->withInput($request->input()); // Retain form data for re-submission
-    //     }
-    // }
-
     // DAFTAR AKUN SEKALIGUS DIRECT KE HALAMAN VALIDASI OTP
     public function daftaraksi(Request $request)
     {
@@ -192,6 +153,6 @@ class AuthController extends Controller
     {
         Auth::logout();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

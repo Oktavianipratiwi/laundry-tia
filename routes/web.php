@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LandingPageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboard\Analytics;
 use App\Http\Controllers\menu\AuthController;
@@ -14,10 +15,10 @@ use App\Http\Controllers\menu\ServicesController;
 use App\Http\Controllers\menu\TransactionsController;
 use App\Http\Controllers\menu\WeightController;
 
-// ROUTE UNTUK PROJEK TA ADA DIBAWAH INI
+// ROUTE UNTUK PROJEK TA WEBSITE ADMIN ADA DIBAWAH INI
 
 // LOGIN
-Route::get('/', [AuthController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/loginaksi', [AuthController::class, 'loginaksi'])->name('loginaksi');
 
 // REGISTER
@@ -108,3 +109,10 @@ Route::middleware(['auth', 'checkRole:pelanggan'])->group(function () {
     // TRANSAKSI PELANGGAN
     Route::post('/bayartransaksi/{id}', [TransactionsController::class, 'bayartransaksi'])->name('bayartransaksi');
 });
+// END
+
+// ROUTE UTK LANDING PAGE WEB LAUNDRY DIBAWAH INI
+
+Route::get('/',[LandingPageController::class, 'getIndex']);
+
+// END

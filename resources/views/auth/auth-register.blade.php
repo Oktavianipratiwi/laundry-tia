@@ -86,7 +86,7 @@
 
           <p class="text-center">
             <span>Sudah punya akun?</span>
-            <a href="{{url('')}}">
+            <a href="{{url('/login')}}">
               <span>Masuk sekarang</span>
             </a>
           </p>
