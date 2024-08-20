@@ -26,7 +26,7 @@ class ServicesController extends Controller
             'updated_at' => now()
         ]);
 
-        return redirect()->route('services-index')->with('success', 'Data Layanan berhasil ditambahkan.');
+        return redirect()->route('services-index')->with('successful', 'Data Layanan berhasil ditambahkan.');
     }
 
     public function editlayanan(Request $request, $id)
@@ -35,7 +35,7 @@ class ServicesController extends Controller
 
         $layanan->update($request->all());
 
-        return redirect()->route('services-index')->with('success', 'Data Layanan berhasil diubah.');
+        return redirect()->route('services-index')->with('successful', 'Data Layanan berhasil diubah.');
     }
 
     public function hapuslayanan($id)
@@ -44,6 +44,6 @@ class ServicesController extends Controller
 
         $layanan->delete();
 
-        return redirect()->route('services-index')->with('success', 'Data Layanan berhasil dihapus.');
+        return redirect()->route('services-index')->with('successful', 'Data Layanan berhasil dihapus.');
     }
 }

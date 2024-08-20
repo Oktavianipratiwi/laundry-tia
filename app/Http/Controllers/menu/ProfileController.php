@@ -33,6 +33,6 @@ class ProfileController extends Controller
 
         $profile->save();
 
-        return redirect()->back()->with('success', 'Profil berhasil diubah.');
+        return redirect()->back()->with('successful', 'Profil berhasil diubah.');
     }
 }

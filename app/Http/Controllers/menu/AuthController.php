@@ -141,7 +141,7 @@ class AuthController extends Controller
             // Log the user in
             Auth::login($user);
 
-            return redirect()->intended('')->with('success', 'Registration successful!');
+            return redirect()->intended('')->with('successful', 'Registration successful!');
         } else {
             // dd($tempUserData, $inputOtp, $otpData);
             return back()->withErrors('Invalid OTP. Please try again.');

@@ -29,7 +29,7 @@ class CustomersController extends Controller
             'updated_at' => now()
         ]);
 
-        return redirect()->route('customers-index')->with('success', 'Data Pelanggan berhasil ditambahkan.');
+        return redirect()->route('customers-index')->with('successful', 'Data Pelanggan berhasil ditambahkan.');
     }
 
     public function editpelanggan(Request $request, $id)
@@ -38,7 +38,7 @@ class CustomersController extends Controller
 
         $pelanggan->update($request->all());
 
-        return redirect()->route('customers-index')->with('success', 'Data Pelanggan berhasil diubah.');
+        return redirect()->route('customers-index')->with('successful', 'Data Pelanggan berhasil diubah.');
     }
 
     public function hapuspelanggan($id)
@@ -47,6 +47,6 @@ class CustomersController extends Controller
 
         $pelanggan->delete();
 
-        return redirect()->route('customers-index')->with('success', 'Data Pelanggan berhasil dihapus.');
+        return redirect()->route('customers-index')->with('successful', 'Data Pelanggan berhasil dihapus.');
     }
 }

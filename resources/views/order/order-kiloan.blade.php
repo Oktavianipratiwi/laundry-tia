@@ -8,6 +8,24 @@ $navbarHideToggle = false;
 @section('title', 'Pemantauan Berat Secara Langsung')
 
 @section('content')
+
+@if(session('successful'))
+<div class="alert alert-success alert-dismissible" role="alert">
+    {{ session('successful') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
+@if(session('info'))
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <h4 class="alert-heading">Rekap Terbaru</h4>
+    <p>Layanan: {{ session('info')['layanan'] }}</p>
+    <p>Total Berat: {{ session('info')['total_berat'] }} Pcs</p>
+    <p>Harga: Rp{{ number_format(session('info')['harga'], 0, ',', '.') }}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <!-- Pemantauan Berat Secara Langsung -->
 <div class="layout-demo-wrapper">
     <div class="row">
@@ -68,7 +86,7 @@ $navbarHideToggle = false;
                         <div class="row g-2">
                             <div class="col mb-1">
                                 <label for="dobBasic" class="form-label"><b>Total Berat (Dalam KG)</b></label>
-                                <input type="text" name="total_berat" class="form-control" value="{{ $berat ? $berat->weight : '' }}" required readonly>
+                                <input type="text" name="total_berat" id="totalBeratInput" class="form-control" value="{{ $berat && $berat->weight !== null ? $berat->weight : '0' }}" required readonly>
                                 </div>
                         </div>
                         <div class="row g-2">
@@ -118,13 +136,16 @@ $navbarHideToggle = false;
                 success: function(data) {
                     if (data.weight !== null) {
                         $('#beratLangsung').text(data.weight + ' Kg');
+                        $('#totalBeratInput').val(data.weight);
                     } else {
-                        $('#beratLangsung').text('0 Kg');                    
+                        $('#beratLangsung').text('0 Kg');
+                        $('#totalBeratInput').val('0');
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching weight: " + error);
                     $('#beratLangsung').text('0 Kg');
+                    $('#totalBeratInput').val('0');
                 }
             });
         }

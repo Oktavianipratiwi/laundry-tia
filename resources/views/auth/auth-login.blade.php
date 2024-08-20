@@ -26,9 +26,9 @@
           <h5 class="mb-2"><b>Selamat Datang di {{config('variables.templateName')}}! 👋</b></h5>
           <p class="mb-4">Silahkan masukkan akun Anda dan mulai pengalaman baru!</p>
 
-          @if(session()->has('success'))
+          @if(session()->has('successful'))
           <div class="alert alert-success" role="alert">
-            {{ session()->get('success') }}
+            {{ session()->get('successful') }}
           </div>
           @elseif($errors->any())
           <div class="alert alert-danger">

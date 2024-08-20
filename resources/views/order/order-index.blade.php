@@ -4,22 +4,15 @@
 
 @section('content')
 
-@if(session('success'))
+@if(session('successful'))
 <div class="alert alert-success alert-dismissible" role="alert">
-    {{ session('success') }}
+    {{ session('successful') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
 
-@if(session('infokiloan'))
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <h4 class="alert-heading">Rekap Terbaru</h4>
-    <p>Layanan: {{ session('infokiloan')['layanan'] }}</p>
-    <p>Total Berat: {{ session('infokiloan')['total_berat'] }} kg</p>
-    <p>Harga: Rp{{ number_format(session('infokiloan')['harga'], 0, ',', '.') }}</p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@elseif(session('infosatuan'))
+
+@if(session('infosatuan'))
 <div class="alert alert-info alert-dismissible fade show" role="alert">
     <h4 class="alert-heading">Rekap Terbaru</h4>
     <p>Layanan: {{ session('infosatuan')['layanan'] }}</p>
@@ -28,6 +21,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+
 <div class="card">
     @if(auth()->user()->role == 'kurir' || auth()->user()->role == 'admin')
     <h5 class="card-header">Daftar Pesanan</h5>

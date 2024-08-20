@@ -52,7 +52,7 @@ class OrderController extends Controller
         $pemesanan->status_pemesanan = 'pesanan belum diproses';
         $pemesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Pemesanan berhasil disimpan.');
+        return redirect()->route('order-index')->with('successful', 'Pemesanan berhasil disimpan.');
     }
 
     // UNTUK KURIR
@@ -70,7 +70,7 @@ class OrderController extends Controller
     $whatsappMessage = urlencode("Halo {$user->name}, saya {$kurir->name} dari layanan antar jemput Tia Laundry. Apakah Anda ada di rumah dan siap untuk penjemputan/pengantaran pesanan? Mohon konfirmasi ketersediaan Anda. Terima kasih!");
     $whatsappLink = "https://api.whatsapp.com/send?phone={$phoneNumber}&text=" . ($whatsappMessage);
     
-    session()->flash('success', 'Pesanan untuk konfirmasi ke WA pelanggan berhasil dikirim.');
+    session()->flash('successful', 'Pesanan untuk konfirmasi ke WA pelanggan berhasil dikirim.');
 
     return redirect()->away($whatsappLink);
     }
@@ -88,7 +88,7 @@ class OrderController extends Controller
         $pemesanan->alasan_penolakan = $request->input('alasan_penolakan');
         $pemesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil ditolak.');
+        return redirect()->route('order-index')->with('successful', 'Pesanan berhasil ditolak.');
     }
 
     // UNTUK KURIR
@@ -106,7 +106,7 @@ class OrderController extends Controller
         $pesanan->save();
 
 
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk penjemputan.');
+        return redirect()->route('order-index')->with('successful', 'Pesanan berhasil dikonfirmasi untuk penjemputan.');
     }
 
     // UNTUK KURIR
@@ -123,7 +123,7 @@ class OrderController extends Controller
         $pesanan->jam_antar = Carbon::now()->format('H:i:s');
         $pesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
+        return redirect()->route('order-index')->with('successful', 'Pesanan berhasil dikonfirmasi untuk pengantaran.');
     }
 
     // UTK KURIR
@@ -142,7 +142,7 @@ class OrderController extends Controller
         $pesanan->status_pemesanan = 'pesanan selesai';
         $pesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Pesanan selesai.');
+        return redirect()->route('order-index')->with('successful', 'Pesanan selesai.');
     }
 
     // UTK KURIR
@@ -242,7 +242,7 @@ class OrderController extends Controller
         $pesanan->status_pemesanan = 'pesanan sedang diproses';
         $pesanan->save();
 
-        return redirect()->route('order-index')->with('success', 'Transaksi berhasil.')
+        return redirect()->route('order-index')->with('successful', 'Transaksi berhasil.')
         ->with('infosatuan', [
             'layanan' => $layanan->jenis_layanan, // Ganti 'nama_layanan' sesuai dengan kolom yang ada
             'jumlah' => $jumlah,
@@ -257,7 +257,7 @@ class OrderController extends Controller
 
         $pesanan->update($request->all());
 
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil diubah.');
+        return redirect()->route('order-index')->with('successful', 'Pesanan berhasil diubah.');
     }
 
     // UNTUK KURIR
@@ -267,6 +267,6 @@ class OrderController extends Controller
 
         $pesanan->delete();
 
-        return redirect()->route('order-index')->with('success', 'Pesanan berhasil dihapus.');
+        return redirect()->route('order-index')->with('successful', 'Pesanan berhasil dihapus.');
     }
 }

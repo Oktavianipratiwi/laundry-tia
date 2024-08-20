@@ -58,7 +58,7 @@ class TransactionsController extends Controller
         $transaksi->tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
         $transaksi->save();
 
-        return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dikonfirmasi.');
+        return redirect()->route('transactions-index')->with('successful', 'Data Transaksi berhasil dikonfirmasi.');
     }
 
     public function hapustransaksi($id)
@@ -67,7 +67,7 @@ class TransactionsController extends Controller
 
         $transaksi->delete();
 
-        return redirect()->route('transactions-index')->with('success', 'Data Transaksi berhasil dihapus.');
+        return redirect()->route('transactions-index')->with('successful', 'Data Transaksi berhasil dihapus.');
     }
 
     public function bayartransaksi(Request $request, $id)
@@ -88,6 +88,6 @@ class TransactionsController extends Controller
         $transaksi->tanggal_pembayaran = Carbon::now()->format('Y-m-d H:i:s');
         $transaksi->save();
 
-        return redirect()->route('transactions-index')->with('success', 'Transaksi berhasil.');
+        return redirect()->route('transactions-index')->with('successful', 'Transaksi berhasil.');
     }
 }

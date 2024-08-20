@@ -122,12 +122,6 @@ class PemesananController extends Controller
 
         Mail::to($user->email)->send(new ProsesPesanan($transaksi, $user->name, $transaksi->total_berat, $transaksi->jumlah, $transaksi->total_bayar, $transaksi->status_pembayaran));
 
-        return redirect()->route('order-index')
-        ->with('success', 'Transaksi berhasil.')
-        ->with('infokiloan', [
-            'layanan' => $layanan->jenis_layanan, // Ganti 'nama_layanan' sesuai dengan kolom yang ada
-            'total_berat' => $total_berat,
-            'harga' => $total_bayar_setelah_diskon
-        ]);;
+        return redirect()->route('order-index');
     }
 }
