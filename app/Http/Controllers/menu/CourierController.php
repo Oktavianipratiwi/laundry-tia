@@ -29,7 +29,7 @@ class CourierController extends Controller
             'updated_at' => now()
         ]);
 
-        return redirect()->route('courier-index')->with('successEdit', 'Data Pakaian berhasil ditambahkan.');
+        return redirect()->route('courier-index')->with('successful', 'Data Pakaian berhasil ditambahkan.');
     }
 
     public function editkurir(Request $request, $id)
@@ -38,7 +38,7 @@ class CourierController extends Controller
 
         $kurir->update($request->all());
 
-        return redirect()->route('courier-index')->with('successEdit', 'Data Kurir berhasil diubah.');
+        return redirect()->route('courier-index')->with('successful', 'Data Kurir berhasil diubah.');
     }
 
     public function hapuskurir($id)
@@ -47,6 +47,6 @@ class CourierController extends Controller
 
         $kurir->delete();
 
-        return redirect()->route('courier-index')->with('successDelete', 'Data Kurir berhasil dihapus.');
+        return redirect()->route('courier-index')->with('successful', 'Data Kurir berhasil dihapus.');
     }
 }

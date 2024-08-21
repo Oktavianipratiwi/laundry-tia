@@ -9,23 +9,6 @@ $navbarHideToggle = false;
 
 @section('content')
 
-@if(session('successful'))
-<div class="alert alert-success alert-dismissible" role="alert">
-    {{ session('successful') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
-
-@if(session('info'))
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <h4 class="alert-heading">Rekap Terbaru</h4>
-    <p>Layanan: {{ session('info')['layanan'] }}</p>
-    <p>Total Berat: {{ session('info')['total_berat'] }} Pcs</p>
-    <p>Harga: Rp{{ number_format(session('info')['harga'], 0, ',', '.') }}</p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
-
 <!-- Pemantauan Berat Secara Langsung -->
 <div class="layout-demo-wrapper">
     <div class="row">
