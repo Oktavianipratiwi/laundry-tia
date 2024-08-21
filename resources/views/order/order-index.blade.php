@@ -137,7 +137,29 @@
                         @endif
                     </td>
                     <td>
-                        @if($row->kurir->id == auth()->user()->id)
+                        @if($row->id_kurir == null)
+                        <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                            <div class="dropdown-menu">
+                                @if($row->status_pemesanan == 'pesanan belum diproses')
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTolakPesanan{{ $row->id }}">
+                                    <i class='bx bxs-no-entry me-1'></i> Tolak Pesanan
+                                </a>
+                                @endif
+                                @if($row->status_pemesanan != 'pesanan ditolak')
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiWhatsApp{{ $row->id }}">
+                                    <i class="bx bxl-whatsapp me-1"></i> Konfirmasi via WhatsApp
+                                </a>
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditPesanan{{ $row->id }}">
+                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                </a>
+                                @endif
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHapusPesanan{{ $row->id }}">
+                                    <i class="bx bx-trash me-1"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                        @elseif($row->kurir->id == auth()->user()->id)
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
