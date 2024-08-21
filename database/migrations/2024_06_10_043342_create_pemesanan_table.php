@@ -24,9 +24,11 @@ return new class extends Migration
             $table->string('alasan_penolakan')->nullable();
             $table->timestamps();
 
+            $table->unsignedBigInteger('id_kurir')->nullable();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_layanan');
 
+            $table->foreign('id_kurir')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_layanan')->references('id')->on('layanan')->onDelete('cascade');
         });
@@ -38,9 +40,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('pemesanan');
-        Schema::table('pemesanans', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
+        Schema::table('pemesanan', function (Blueprint $table) {
+            $table->dropForeign(['courier_id']);
+            $table->dropColumn('courier_id');
+            $table->dropForeign(['id_user']);
+            $table->dropColumn('id_user');
     });
 }
 };

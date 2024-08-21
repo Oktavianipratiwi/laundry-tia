@@ -41,4 +41,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pemesanan::class, 'user_id', 'id');
     }
+    
 }

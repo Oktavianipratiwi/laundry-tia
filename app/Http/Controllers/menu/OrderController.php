@@ -50,6 +50,7 @@ class OrderController extends Controller
         $pemesanan->no_telp = $request->no_telp;
         $pemesanan->id_layanan = $request->id_layanan;
         $pemesanan->status_pemesanan = 'pesanan belum diproses';
+        $pemesanan->id_kurir = null;
         $pemesanan->save();
 
         return redirect()->route('order-index')->with('successful', 'Pemesanan berhasil disimpan.');
@@ -103,6 +104,7 @@ class OrderController extends Controller
 
         $pesanan->status_pemesanan = 'kurir jemput pesanan';
         $pesanan->jam_jemput = Carbon::now()->format('H:i:s');
+        $pesanan->id_kurir = $kurir->id; // Simpan ID kurir yang sedang login
         $pesanan->save();
 
 

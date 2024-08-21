@@ -71,7 +71,9 @@
                     @endif
                     <td>{{ $row->alamat }}</td>
                     <td>
-                        @if($row->status_pemesanan == 'pesanan sedang diproses')
+                        @if($row->kurir && $row->kurir->id != auth()->user()->id)
+                        <span class="badge bg-label-danger me-1">Pesanan Diambil Alih Kurir Lain</span>
+                        @elseif($row->status_pemesanan == 'pesanan sedang diproses')
                         <span class="badge bg-label-success me-1">Pesanan sedang diproses</span>
                         @elseif($row->status_pemesanan == 'pesanan belum diproses')
                         <span class="badge bg-label-warning me-1">Pesanan belum diproses</span>
@@ -87,7 +89,11 @@
                     </td>
                     @if(auth()->user()->role == 'kurir')
                     <td>
-                        @if($row->status_pemesanan == 'pesanan belum diproses')
+                        @if($row->kurir && $row->kurir->id != auth()->user()->id)
+                        <button type="button" class="btn btn-danger" disabled="disabled">
+                            Diambil Kurir Lain
+                        </button>
+                        @elseif($row->status_pemesanan == 'pesanan belum diproses')
                         <form action="{{ route('konfirmasipesananjemput', $row->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-outline-primary">
@@ -131,6 +137,7 @@
                         @endif
                     </td>
                     <td>
+                        @if($row->kurir->id == auth()->user()->id)
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                             <div class="dropdown-menu">
@@ -154,6 +161,7 @@
                         </div>
                     </td>
                     @endif
+                    @endif
                 </tr>
             </tbody>
             @endforeach
@@ -169,6 +177,8 @@
                     <th>Alamat</th>
                     <th>No Telp</th>
                     <th>Status Pemesanan</th>
+                    <th>Nama Kurir</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             @if(count($pesananDaftar) == 0)
@@ -195,6 +205,21 @@
                         @elseif($row->status_pemesanan == 'pesanan ditolak')
                         <span class="badge bg-label-danger me-1">Pesanan Ditolak - {{ $row->alasan_penolakan }}</span> 
                         @endif
+                    </td>
+                    @if($row->id_kurir == null)
+                    <td>-</td>
+                    @else
+                    <td>{{ $row->kurir->name }}</td>
+                    @endif  
+                    <td>
+                    <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="https://api.whatsapp.com/send?phone={{$row->kurir->no_telp ?? 0}}" target="_blank">
+                                    <i class='bx bxl-whatsapp me-1'></i> Hubungi Kurir
+                                </a>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>

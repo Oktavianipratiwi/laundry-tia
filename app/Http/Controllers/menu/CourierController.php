@@ -29,7 +29,7 @@ class CourierController extends Controller
             'updated_at' => now()
         ]);
 
-        return redirect()->route('courier-index')->with('successful', 'Data Pakaian berhasil ditambahkan.');
+        return redirect()->route('courier-index')->with('successful', 'Data Kurir berhasil ditambahkan.');
     }
 
     public function editkurir(Request $request, $id)

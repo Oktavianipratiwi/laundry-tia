@@ -29,6 +29,11 @@ class Pemesanan extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
+    public function kurir()
+    {
+        return $this->belongsTo(User::class, 'id_kurir');
+    }
+
     public function layanan()
     {
         return $this->belongsTo(Layanan::class, 'id_layanan');
