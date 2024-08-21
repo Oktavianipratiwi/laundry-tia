@@ -10,6 +10,11 @@
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="mb-0">Detail Transaksi</h5>
+                <form action="{{ url('transaksi') }}" method="GET">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="tf-icons bx bx-left-arrow-circle me-1"></span>Kembali
+                    </button>
+                </form>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
@@ -27,7 +32,7 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-company"><b>Tanggal dan Jam Jemput</b></label>
                     <div class="col-sm-10">
-                    <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($pemesanan->tgl_penjemputan)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($pemesanan->jam_jemput)->translatedFormat('H:i') }} WIB" readonly>
+                        <input type="text" class="form-control" value="{{ \Carbon\Carbon::parse($pemesanan->tgl_penjemputan)->translatedFormat('l, j F Y') }} - {{ \Carbon\Carbon::parse($pemesanan->jam_jemput)->translatedFormat('H:i') }} WIB" readonly>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -39,7 +44,7 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-message"><b>Alamat</b></label>
                     <div class="col-sm-10">
-                        <textarea id="basic-default-message" name="alamat" class="form-control"  readonly>{{ $transaksi->user->alamat }}</textarea>
+                        <textarea id="basic-default-message" name="alamat" class="form-control" readonly>{{ $transaksi->user->alamat }}</textarea>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -51,14 +56,14 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>Layanan</b></label>
                     <div class="col-sm-10">
-                        <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask"  value="{{ $transaksi->layanan->jenis_layanan }}" readonly />
+                        <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask" value="{{ $transaksi->layanan->jenis_layanan }}" readonly />
                     </div>
                 </div>
                 @if($transaksi->total_berat != null)
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>Total Berat</b></label>
                     <div class="col-sm-10">
-                        <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask"  value="{{ $transaksi->total_berat }} Kg" readonly />
+                        <input type="text" id="basic-default-phone" name="total_berat" class="form-control phone-mask" value="{{ $transaksi->total_berat }} Kg" readonly />
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -84,13 +89,13 @@
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>Status Pengantaran</b></label>
                     <div class="col-sm-10">
-                        <input type="text"  name="status_pembayaran" class="form-control phone-mask"  value="{{ $transaksi->status_pengantaran }}" readonly />
+                        <input type="text" name="status_pembayaran" class="form-control phone-mask" value="{{ $transaksi->status_pengantaran }}" readonly />
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>Status Pembayaran</b></label>
                     <div class="col-sm-10">
-                        <input type="text"  name="status_pembayaran" class="form-control phone-mask"  value="{{ $transaksi->status_pembayaran }}" readonly />
+                        <input type="text" name="status_pembayaran" class="form-control phone-mask" value="{{ $transaksi->status_pembayaran }}" readonly />
                     </div>
                 </div>
                 @if($user->role != 'admin')
@@ -110,6 +115,7 @@
                     </div>
                 </form>
                 @endif
+
                 @if($transaksi->bukti_pembayaran)
                 <div class="mt-3 text-center">
                     <p><strong>Bukti Pembayaran:</strong></p>
